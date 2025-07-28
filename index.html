@@ -3,29 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Luky | Pitch de Inversión - La Fintech que Impulsa tu Moto</title>
+    <title data-key="docTitle">Luky | Pitch de Inversión - La Fintech que Impulsa tu Moto</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        /* Paleta de colores: Negro y Amarillo Vibrante */
+        /* Tema Oscuro */
         :root {
-            --bg-dark: #1A1A1A; /* Fondo casi negro */
-            --accent-yellow: #FFD700; /* Amarillo vibrante (Gold) */
+            --bg-main: #1A1A1A; /* Fondo casi negro */
+            --accent-color: #FFD700; /* Amarillo vibrante (Gold) */
             --card-bg: #2C2C2C; /* Gris oscuro para tarjetas */
-            --text-light: #E0E0E0; /* Gris claro para texto en fondos oscuros */
-            --text-dark: #333333; /* Gris oscuro para texto en fondos claros */
-            --chart-color-1: #FFD700; /* Amarillo para gráficos */
-            --chart-color-2: #555555; /* Gris oscuro para gráficos */
+            --text-primary: #E0E0E0; /* Blanco suave para títulos y texto principal */
+            --text-secondary: #F0F0F0; /* Blanco muy claro para textos secundarios */
+            --header-bg: #000000;
+            --footer-bg: #000000;
+            --chart-color-1: #FFD700;
+            --chart-color-2: #555555;
+            --border-color: #4A4A4A;
+            --button-bg: #4A4A4A; /* Dark gray for buttons */
+            --button-text: #E0E0E0; /* Light text for buttons */
+        }
+
+        /* Tema Claro */
+        body.light-theme {
+            --bg-main: #F8F8F8; /* Blanco casi puro */
+            --accent-color: #DAA520; /* Amarillo dorado más suave */
+            --card-bg: #FFFFFF;
+            --text-primary: #333333; /* Negro suave para títulos y texto principal */
+            --text-secondary: #6B7280; /* Gris medio para texto secundario */
+            --header-bg: #EFEFEF;
+            --footer-bg: #EFEFEF;
+            --chart-color-1: #DAA520;
+            --chart-color-2: #CCCCCC;
+            --border-color: #E5E7EB;
+            --button-bg: #E5E7EB; /* Light gray for buttons */
+            --button-text: #333333; /* Dark text for buttons */
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-light);
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            transition: background-color 0.3s, color 0.3s;
         }
+        h1, h2, h3, h4, strong {
+            color: var(--text-primary); /* Asegura que los títulos cambien de color */
+            transition: color 0.3s;
+        }
+        /* Clases personalizadas para usar las variables CSS */
+        .text-primary-custom {
+            color: var(--text-primary);
+            transition: color 0.3s;
+        }
+        .text-secondary-custom {
+            color: var(--text-secondary);
+            transition: color 0.3s;
+        }
+
         .chart-container {
             position: relative;
             width: 100%;
@@ -58,17 +94,17 @@
                 align-items: center;
                 justify-content: center;
                 font-size: 2.5rem;
-                color: var(--accent-yellow);
+                color: var(--accent-color);
             }
         }
         .flow-arrow-down {
             font-size: 2rem;
-            color: var(--accent-yellow);
+            color: var(--accent-color);
             margin: 0.5rem 0;
         }
         .spinner {
             border: 4px solid rgba(255, 255, 255, 0.1);
-            border-left-color: var(--accent-yellow);
+            border-left-color: var(--accent-color);
             border-radius: 50%;
             width: 30px;
             height: 30px;
@@ -81,53 +117,247 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .problem-slide {
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            min-height: 400px; /* Ensure enough height for content */
+        }
+        .problem-slide.active {
+            display: flex; /* Show active slide */
+        }
+        .problem-point-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .carousel-button {
+            background-color: var(--accent-color);
+            color: black;
+            padding: 0.75rem 1.25rem;
+            border-radius: 9999px; /* Full rounded */
+            font-weight: bold;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+        .carousel-button:hover {
+            background-color: var(--accent-color); /* Slightly darker on hover */
+            opacity: 0.9;
+        }
+        .carousel-dots .dot {
+            height: 10px;
+            width: 10px;
+            margin: 0 5px;
+            background-color: var(--border-color);
+            border-radius: 50%;
+            display: inline-block;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .carousel-dots .dot.active {
+            background-color: var(--accent-color);
+        }
+
+        /* Dropdown specific styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: var(--card-bg);
+            min-width: 120px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 100; /* Higher z-index */
+            border-radius: 0.5rem;
+            overflow: hidden;
+            right: 0;
+            top: 100%; /* Position below the button */
+            border: 1px solid var(--border-color); /* Add border for definition */
+        }
+        .dropdown-content button {
+            color: var(--text-primary);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            width: 100%;
+            text-align: left;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .dropdown-content button:hover {
+            background-color: var(--border-color);
+        }
+        .dropdown-content.show {
+            display: block;
+        }
     </style>
 </head>
 <body class="text-slate-800">
 
-    <header class="bg-black shadow-md sticky top-0 z-50">
+    <header class="bg-header-bg shadow-md sticky top-0 z-50 transition-colors duration-300">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <h1 class="text-3xl font-bold text-white">Luky<span class="text-yellow-400">.AI</span></h1>
-            <a href="#contacto" class="bg-yellow-400 text-black font-bold py-2 px-4 rounded-lg hover:bg-yellow-500 transition-colors">Conéctate con Nosotros</a>
+            <h1 class="text-3xl font-bold text-primary-custom"><span data-key="lukyTitle">Luky</span><span class="text-yellow-400">.AI</span></h1>
+            <div class="flex items-center space-x-4">
+                <button id="themeToggle" class="p-2 rounded-full bg-[var(--button-bg)] text-[var(--button-text)] hover:bg-gray-600 transition-colors duration-300">
+                    <span id="themeIcon">☀️</span>
+                </button>
+                <div class="dropdown">
+                    <button id="languageDropdownBtn" class="p-2 rounded-full bg-[var(--button-bg)] text-[var(--button-text)] hover:bg-gray-600 transition-colors duration-300 flex items-center">
+                        <span id="currentFlag">🇨🇴</span>
+                        <span id="currentLangText" class="ml-2" data-key="langEsText">Español</span>
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="languageDropdownContent" class="dropdown-content">
+                        <button class="flex items-center" data-lang="es">🇨🇴 <span class="ml-2" data-key="langEsText">Español</span></button>
+                        <button class="flex items-center" data-lang="en">🇺🇸 <span class="ml-2" data-key="langEnText">English</span></button>
+                    </div>
+                </div>
+                <a href="#contacto" class="bg-accent-color text-primary-custom font-bold py-2 px-4 rounded-lg hover:bg-yellow-500 transition-colors duration-300" data-key="contactButton">Conéctate con Nosotros</a>
+            </div>
         </nav>
     </header>
 
     <main class="container mx-auto p-4 md:p-8">
 
         <section id="oportunidad" class="text-center my-12 md:my-20">
-            <h2 class="text-4xl md:text-5xl font-black mb-4 text-white">Luky: Impulsando el Futuro de la Movilidad</h2>
-            <p class="max-w-3xl mx-auto text-lg md:text-xl text-gray-400 mb-8">Estamos resolviendo una fricción masiva en el mercado de financiación de motocicletas, abriendo un segmento de alto crecimiento.</p>
-            <div class="bg-card-bg rounded-xl shadow-lg p-8 max-w-md mx-auto text-white">
-                <p class="text-7xl md:text-8xl font-black text-accent-yellow">+$1.5B</p>
-                <p class="text-xl md:text-2xl font-bold mt-2">Mercado Potencial Anual de Financiación de Motos en Colombia (Hipotético).</p>
+            <h2 class="text-4xl md:text-5xl font-black mb-4 text-primary-custom" data-key="section1Title">Luky: Impulsando el Futuro de la Movilidad</h2>
+            <p class="max-w-3xl mx-auto text-lg md:text-xl text-secondary-custom mb-8" data-key="section1Subtitle">Estamos resolviendo una fricción masiva en el mercado de financiación de motocicletas, abriendo un segmento de alto crecimiento.</p>
+            <div class="bg-card-bg rounded-xl shadow-lg p-8 max-w-md mx-auto text-primary-custom transition-colors duration-300">
+                <p class="text-7xl md:text-8xl font-black text-accent-color" data-key="marketPotentialValue">+$1.5B</p>
+                <p class="text-xl md:text-2xl font-bold mt-2" data-key="marketPotentialText">Mercado Potencial Anual de Financiación de Motos en Colombia (Hipotético).</p>
+            </div>
+        </section>
+
+        <section id="problema-profundo" class="my-12 md:my-24 bg-card-bg rounded-xl shadow-lg p-8 md:p-12 transition-colors duration-300">
+            <h2 class="text-4xl font-black text-center mb-10 text-primary-custom" data-key="deepProblemTitle">El Problema: Una Red de Ineficiencias</h2>
+            <p class="max-w-3xl mx-auto text-lg text-secondary-custom mb-12 text-center" data-key="deepProblemSubtitle">El acceso a la financiación de motocicletas es un nudo complejo de obstáculos para todos los actores del ecosistema.</p>
+
+            <div id="problemCarousel" class="relative w-full max-w-4xl mx-auto">
+                <!-- Slide 1: Cliente Final -->
+                <div class="problem-slide active" data-slide="0">
+                    <div class="text-center mb-8">
+                        <p class="text-6xl mb-4">👤</p>
+                        <h3 class="text-3xl font-bold text-primary-custom" data-key="clientFinalNode">El Problema del Cliente Final</h3>
+                        <p class="text-secondary-custom mt-2" data-key="clientIntroText">Los compradores de motos enfrentan barreras significativas para obtener financiación, lo que genera frustración y pérdida de oportunidades.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+                        <div class="problem-point-card text-primary-custom">
+                            <p class="text-4xl mb-2">⏳</p>
+                            <p class="font-bold text-secondary-custom" data-key="clientPoint1">Demoras o Rechazos (70%)</p>
+                            <p class="text-secondary-custom text-xs" data-key="clientSolution1">➡️ **Luky:** Pre-aprobado instantáneo</p>
+                        </div>
+                        <div class="problem-point-card text-primary-custom">
+                            <p class="text-4xl mb-2">🚫</p>
+                            <p class="font-bold text-secondary-custom" data-key="clientPoint2">Exclusión (45% no bancarizados)</p>
+                            <p class="text-secondary-custom text-xs" data-key="clientSolution2">➡️ **Luky:** Evaluación inclusiva con IA</p>
+                        </div>
+                        <div class="problem-point-card text-primary-custom">
+                            <p class="text-4xl mb-2">❓</p>
+                            <p class="font-bold text-secondary-custom" data-key="clientPoint3">Falta de Transparencia</p>
+                            <p class="text-secondary-custom text-xs" data-key="clientSolution3">➡️ **Luky:** Plataforma con trazabilidad</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 2: Concesionarios -->
+                <div class="problem-slide" data-slide="1">
+                    <div class="text-center mb-8">
+                        <p class="text-6xl mb-4">🏪</p>
+                        <h3 class="text-3xl font-bold text-primary-custom" data-key="dealersNode">El Desafío de los Concesionarios</h3>
+                        <p class="text-secondary-custom mt-2" data-key="dealerIntroText">Los puntos de venta de motos pierden ventas y eficiencia debido a procesos de financiación lentos y complicados.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+                        <div class="problem-point-card text-primary-custom">
+                            <p class="text-4xl mb-2">💸</p>
+                            <p class="font-bold text-secondary-custom" data-key="dealerPoint1">Ventas Potenciales Perdidas (30%)</p>
+                            <p class="text-secondary-custom text-xs" data-key="dealerSolution1">➡️ **Luky:** Agilidad en desembolsos</p>
+                        </div>
+                        <div class="problem-point-card text-primary-custom">
+                            <p class="text-4xl mb-2">⚙️</p>
+                            <p class="font-bold text-secondary-custom" data-key="dealerPoint2">Ineficiencias con Múltiples Financieras</p>
+                            <p class="text-secondary-custom text-xs" data-key="dealerSolution2">➡️ **Luky:** Plataforma unificada</p>
+                        </div>
+                        <div class="problem-point-card text-primary-custom">
+                            <p class="text-4xl mb-2">🕵️‍♀️</p>
+                            <p class="font-bold text-secondary-custom" data-key="dealerPoint3">Falta de Contexto del Cliente</p>
+                            <p class="text-secondary-custom text-xs" data-key="dealerSolution3">➡️ **Luky:** Perfil crediticio detallado</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 3: Asesores Comerciales -->
+                <div class="problem-slide" data-slide="2">
+                    <div class="text-center mb-8">
+                        <p class="text-6xl mb-4">👨‍💼</p>
+                        <h3 class="text-3xl font-bold text-primary-custom" data-key="advisorsNode">Las Limitaciones de los Asesores</h3>
+                        <p class="text-secondary-custom mt-2" data-key="advisorIntroText">Los asesores dedican tiempo valioso a tareas administrativas en lugar de enfocarse en generar valor y cerrar ventas.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+                        <div class="problem-point-card text-primary-custom">
+                            <p class="text-4xl mb-2">📝</p>
+                            <p class="font-bold text-secondary-custom" data-key="advisorPoint1">Procesos Manuales (25% Productividad)</p>
+                            <p class="text-secondary-custom text-xs" data-key="advisorSolution1">➡️ **Luky:** Automatización total</p>
+                        </div>
+                        <div class="problem-point-card text-primary-custom">
+                            <p class="text-4xl mb-2">🤔</p>
+                            <p class="font-bold text-secondary-custom" data-key="advisorPoint2">Incertidumbre en Aprobación</p>
+                            <p class="text-secondary-custom text-xs" data-key="advisorSolution2">➡️ **Luky:** Modelos decisorios AI</p>
+                        </div>
+                        <div class="problem-point-card text-primary-custom">
+                            <p class="text-4xl mb-2">📱</p>
+                            <p class="font-bold text-secondary-custom" data-key="advisorPoint3">Falta de Herramientas Digitales</p>
+                            <p class="text-secondary-custom text-xs" data-key="advisorSolution3">➡️ **Luky:** Plataforma integral</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Carousel Navigation -->
+                <button id="prevSlideBtn" class="carousel-button absolute left-0 top-1/2 -translate-y-1/2 px-4 py-2 text-xl">◀</button>
+                <button id="nextSlideBtn" class="carousel-button absolute right-0 top-1/2 -translate-y-1/2 px-4 py-2 text-xl">▶</button>
+                <div id="carouselDots" class="carousel-dots flex justify-center mt-8">
+                    <span class="dot active" data-slide-index="0"></span>
+                    <span class="dot" data-slide-index="1"></span>
+                    <span class="dot" data-slide-index="2"></span>
+                </div>
             </div>
         </section>
 
         <section id="mercado" class="my-12 md:my-24">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                <div class="bg-card-bg rounded-xl shadow-lg p-8 text-white">
-                    <h3 class="text-3xl font-bold mb-4">Un Mercado en Expansión con Demanda Insatisfecha</h3>
-                    <p class="text-gray-400 mb-6">El crecimiento exponencial en la venta de motocicletas contrasta con la rigidez del sistema financiero tradicional, dejando una brecha significativa para la innovación.</p>
+                <div class="bg-card-bg rounded-xl shadow-lg p-8 text-primary-custom transition-colors duration-300">
+                    <h3 class="text-3xl font-bold mb-4" data-key="marketGrowthTitle">Un Mercado en Expansión con Demanda Insatisfecha</h3>
+                    <p class="text-secondary-custom mb-6" data-key="marketGrowthText">El crecimiento exponencial en la venta de motocicletas contrasta con la rigidez del sistema financiero tradicional, dejando una brecha significativa para la innovación.</p>
                     <div class="text-center">
-                        <p class="text-6xl font-black text-accent-yellow">+600,000</p>
-                        <p class="text-xl font-bold mt-2">Motos nuevas matriculadas en 2023 🏍️</p>
+                        <p class="text-6xl font-black text-accent-color" data-key="motorcycleSalesValue">+600,000</p>
+                        <p class="text-xl font-bold mt-2 text-primary-custom" data-key="motorcycleSalesText">Motos nuevas matriculadas en 2023 🏍️</p>
                     </div>
                 </div>
-                <div class="bg-card-bg rounded-xl shadow-lg p-8 text-white">
-                    <h3 class="text-2xl font-bold text-center mb-4">El 45% del Mercado Motero No Califica</h3>
+                <div class="bg-card-bg rounded-xl shadow-lg p-8 text-primary-custom transition-colors duration-300">
+                    <h3 class="text-2xl font-bold text-center mb-4" data-key="unqualifiedMarketTitle">El 45% del Mercado Motero No Califica</h3>
                     <div class="chart-container">
                         <canvas id="unbankedChart"></canvas>
                     </div>
-                    <p class="text-center text-gray-400 mt-4">Un segmento masivo de clientes potenciales con capacidad de pago, pero sin acceso a crédito tradicional.</p>
+                    <p class="text-center text-secondary-custom mt-4" data-key="unqualifiedMarketText">Un segmento masivo de clientes potenciales con capacidad de pago, pero sin acceso a crédito tradicional.</p>
                 </div>
             </div>
         </section>
 
-        <section id="ineficiencias" class="my-12 md:my-24 bg-black text-white rounded-xl shadow-lg p-8 md:p-12">
-            <h2 class="text-4xl font-black text-center mb-4 text-white">Ineficiencias Actuales: Costos y Oportunidades Perdidas</h2>
-            <p class="max-w-3xl mx-auto text-lg text-gray-400 mb-10 text-center">Las fricciones en el proceso de crédito actual resultan en pérdidas cuantificables para concesionarios y asesores.</p>
-            <div class="bg-card-bg rounded-lg p-6">
-                 <h3 class="text-2xl font-bold text-center mb-4 text-white">Impacto Financiero Negativo por Sector</h3>
+        <section id="ineficiencias" class="my-12 md:my-24 bg-black text-white rounded-xl shadow-lg p-8 md:p-12 transition-colors duration-300">
+            <h2 class="text-4xl font-black text-center mb-4 text-primary-custom" data-key="inefficienciesTitle">Ineficiencias Actuales: Costos y Oportunidades Perdidas</h2>
+            <p class="max-w-3xl mx-auto text-lg text-secondary-custom mb-10 text-center" data-key="inefficienciesSubtitle">Las fricciones en el proceso de crédito actual resultan en pérdidas cuantificables para concesionarios y asesores.</p>
+            <div class="bg-card-bg rounded-lg p-6 transition-colors duration-300">
+                 <h3 class="text-2xl font-bold text-center mb-4 text-primary-custom" data-key="impactBySectorTitle">Impacto Financiero Negativo por Sector</h3>
                 <div class="chart-container">
                     <canvas id="painPointsChart"></canvas>
                 </div>
@@ -135,237 +365,611 @@
         </section>
 
         <section id="propuesta-valor" class="text-center my-12 md:my-24">
-            <h2 class="text-4xl md:text-5xl font-black mb-4 text-white">Luky: Nuestra Propuesta de Valor Disruptiva</h2>
-            <p class="max-w-3xl mx-auto text-lg md:text-xl text-gray-400 mb-12">Una plataforma fintech que automatiza, personaliza y acelera el acceso a crédito, generando valor para todo el ecosistema.</p>
+            <h2 class="text-4xl md:text-5xl font-black mb-4 text-primary-custom" data-key="valuePropTitle">Luky: Nuestra Propuesta de Valor Disruptiva</h2>
+            <p class="max-w-3xl mx-auto text-lg md:text-xl text-secondary-custom mb-12" data-key="valuePropSubtitle">Una plataforma fintech que automatiza, personaliza y acelera el acceso a crédito, generando valor para todo el ecosistema.</p>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div class="bg-card-bg rounded-xl shadow-lg p-6 text-white">
-                    <p class="text-5xl mb-3 text-accent-yellow">⚡</p>
-                    <h4 class="text-xl font-bold mb-2">Velocidad de Aprobación</h4>
-                    <p class="text-gray-400">Créditos pre-aprobados en minutos, no días.</p>
+                <div class="bg-card-bg rounded-xl shadow-lg p-6 text-primary-custom transition-colors duration-300">
+                    <p class="text-5xl mb-3 text-accent-color">⚡</p>
+                    <h4 class="text-xl font-bold mb-2" data-key="vp1Title">Velocidad de Aprobación</h4>
+                    <p class="text-secondary-custom" data-key="vp1Text">Créditos pre-aprobados en minutos, no días.</p>
                 </div>
-                <div class="bg-card-bg rounded-xl shadow-lg p-6 text-white">
-                    <p class="text-5xl mb-3 text-accent-yellow">🎯</p>
-                    <h4 class="text-xl font-bold mb-2">Personalización AI</h4>
-                    <p class="text-gray-400">Ofertas a la medida, maximizando la inclusión.</p>
+                <div class="bg-card-bg rounded-xl shadow-lg p-6 text-primary-custom transition-colors duration-300">
+                    <p class="text-5xl mb-3 text-accent-color">🎯</p>
+                    <h4 class="text-xl font-bold mb-2" data-key="vp2Title">Personalización AI</h4>
+                    <p class="text-secondary-custom" data-key="vp2Text">Ofertas a la medida, maximizando la inclusión.</p>
                 </div>
-                <div class="bg-card-bg rounded-xl shadow-lg p-6 text-white">
-                    <p class="text-5xl mb-3 text-accent-yellow">🤝</p>
-                    <h4 class="text-xl font-bold mb-2">Experiencia Superior</h4>
-                    <p class="text-gray-400">Acompañamiento y educación financiera.</p>
+                <div class="bg-card-bg rounded-xl shadow-lg p-6 text-primary-custom transition-colors duration-300">
+                    <p class="text-5xl mb-3 text-accent-color">🤝</p>
+                    <h4 class="text-xl font-bold mb-2" data-key="vp3Title">Experiencia Superior</h4>
+                    <p class="text-secondary-custom" data-key="vp3Text">Acompañamiento y educación financiera.</p>
                 </div>
-                <div class="bg-card-bg rounded-xl shadow-lg p-6 text-white">
-                    <p class="text-5xl mb-3 text-accent-yellow">📈</p>
-                    <h4 class="text-xl font-bold mb-2">Escalabilidad Digital</h4>
-                    <p class="text-gray-400">Operaciones automatizadas, alto volumen.</p>
+                <div class="bg-card-bg rounded-xl shadow-lg p-6 text-primary-custom transition-colors duration-300">
+                    <p class="text-5xl mb-3 text-accent-color">📈</p>
+                    <h4 class="text-xl font-bold mb-2" data-key="vp4Title">Escalabilidad Digital</h4>
+                    <p class="text-secondary-custom" data-key="vp4Text">Operaciones automatizadas, alto volumen.</p>
                 </div>
-                <!-- Nuevos aspectos de la propuesta de valor -->
-                <div class="bg-card-bg rounded-xl shadow-lg p-6 text-white">
-                    <p class="text-5xl mb-3 text-accent-yellow">💬</p>
-                    <h4 class="text-xl font-bold mb-2">Soporte 24/7 con Chatbot</h4>
-                    <p class="text-gray-400">Asistencia constante para cualquier consulta o problema.</p>
+                <div class="bg-card-bg rounded-xl shadow-lg p-6 text-primary-custom transition-colors duration-300">
+                    <p class="text-5xl mb-3 text-accent-color">💬</p>
+                    <h4 class="text-xl font-bold mb-2" data-key="vp5Title">Soporte 24/7 con Chatbot</h4>
+                    <p class="text-secondary-custom" data-key="vp5Text">Asistencia constante para cualquier consulta o problema.</p>
                 </div>
-                <div class="bg-card-bg rounded-xl shadow-lg p-6 text-white">
-                    <p class="text-5xl mb-3 text-accent-yellow">💰</p>
-                    <h4 class="text-xl font-bold mb-2">Recaudos Inteligentes</h4>
-                    <p class="text-gray-400">Sistema automatizado y con trazabilidad para pagos.</p>
+                <div class="bg-card-bg rounded-xl shadow-lg p-6 text-primary-custom transition-colors duration-300">
+                    <p class="text-5xl mb-3 text-accent-color">💰</p>
+                    <h4 class="text-xl font-bold mb-2" data-key="vp6Title">Recaudos Inteligentes</h4>
+                    <p class="text-secondary-custom" data-key="vp6Text">Sistema automatizado y con trazabilidad para pagos.</p>
                 </div>
-                <div class="bg-card-bg rounded-xl shadow-lg p-6 text-white">
-                    <p class="text-5xl mb-3 text-accent-yellow">🔗</p>
-                    <h4 class="text-xl font-bold mb-2">Conexiones Web Services</h4>
-                    <p class="text-gray-400">Automatización con Data Crédito Colombia y más.</p>
+                <div class="bg-card-bg rounded-xl shadow-lg p-6 text-primary-custom transition-colors duration-300">
+                    <p class="text-5xl mb-3 text-accent-color">🔗</p>
+                    <h4 class="text-xl font-bold mb-2" data-key="vp7Title">Conexiones Web Services</h4>
+                    <p class="text-secondary-custom" data-key="vp7Text">Automatización con Data Crédito Colombia y más.</p>
                 </div>
             </div>
         </section>
-
+        
         <section id="flujo-valor" class="my-12 md:my-24">
-            <h2 class="text-4xl font-black text-center mb-12 text-white">El Flujo de Valor de Luky: Eficiencia y Conversión</h2>
+            <h2 class="text-4xl font-black text-center mb-12 text-primary-custom" data-key="flowTitle">El Flujo de Valor de Luky: Eficiencia y Conversión</h2>
             <div class="grid grid-cols-1 md:grid-cols-11 gap-0 items-stretch">
-                <div class="md:col-span-1 flow-step bg-card-bg rounded-lg shadow-md text-white"><div><span class="text-3xl font-bold text-accent-yellow">1.</span><p>Simulación Instantánea</p></div></div>
+                <div class="md:col-span-1 flow-step bg-card-bg rounded-lg shadow-md text-primary-custom transition-colors duration-300"><div><span class="text-3xl font-bold text-accent-color">1.</span><p data-key="flow1">Simulación Instantánea</p></div></div>
                 <div class="flex justify-center md:hidden"><div class="flow-arrow-down">▼</div></div>
                 <div class="md:col-span-1 flow-arrow">▶</div>
-                <div class="md:col-span-1 flow-step bg-card-bg rounded-lg shadow-md text-white"><div><span class="text-3xl font-bold text-accent-yellow">2.</span><p>Captura de Datos Digital</p></div></div>
+                <div class="md:col-span-1 flow-step bg-card-bg rounded-lg shadow-md text-primary-custom transition-colors duration-300"><div><span class="text-3xl font-bold text-accent-color">2.</span><p data-key="flow2">Captura de Datos Digital</p></div></div>
                 <div class="flex justify-center md:hidden"><div class="flow-arrow-down">▼</div></div>
                 <div class="md:col-span-1 flow-arrow">▶</div>
-                <div class="md:col-span-1 flow-step bg-card-bg rounded-lg shadow-md text-white"><div><span class="text-3xl font-bold text-accent-yellow">3.</span><p>Verificación Rápida (Metamap)</p></div></div>
+                <div class="md:col-span-1 flow-step bg-card-bg rounded-lg shadow-md text-primary-custom transition-colors duration-300"><div><span class="text-3xl font-bold text-accent-color">3.</span><p data-key="flow3">Verificación Rápida (Metamap)</p></div></div>
                 <div class="flex justify-center md:hidden"><div class="flow-arrow-down">▼</div></div>
                 <div class="md:col-span-1 flow-arrow">▶</div>
-                <div class="md:col-span-1 flow-step bg-card-bg rounded-lg shadow-md text-white"><div><span class="text-3xl font-bold text-accent-yellow">4.</span><p>Evaluación Crediticia AI</p></div></div>
+                <div class="md:col-span-1 flow-step bg-card-bg rounded-lg shadow-md text-primary-custom transition-colors duration-300"><div><span class="text-3xl font-bold text-accent-color">4.</span><p data-key="flow4">Evaluación Crediticia AI</p></div></div>
                 <div class="flex justify-center md:hidden"><div class="flow-arrow-down">▼</div></div>
                 <div class="md:col-span-1 flow-arrow">▶</div>
-                <div class="md:col-span-1 flow-step bg-card-bg rounded-lg shadow-md text-white"><div><span class="text-3xl font-bold text-accent-yellow">5.</span><p>Decisión y Oferta Optimizada</p></div></div>
+                <div class="md:col-span-1 flow-step bg-card-bg rounded-lg shadow-md text-primary-custom transition-colors duration-300"><div><span class="text-3xl font-bold text-accent-color">5.</span><p data-key="flow5">Decisión y Oferta Optimizada</p></div></div>
                 <div class="flex justify-center md:hidden"><div class="flow-arrow-down">▼</div></div>
                 <div class="md:col-span-1 flow-arrow">▶</div>
-                <div class="md:col-span-1 flow-step bg-card-bg rounded-lg shadow-md text-white"><div><span class="text-3xl font-bold text-accent-yellow">6.</span><p>Desembolso y Gestión Post-Crédito</p></div></div>
+                <div class="md:col-span-1 flow-step bg-card-bg rounded-lg shadow-md text-primary-custom transition-colors duration-300"><div><span class="text-3xl font-bold text-accent-color">6.</span><p data-key="flow6">Desembolso y Gestión Post-Crédito</p></div></div>
             </div>
         </section>
 
-        <section id="flujo-sistematico" class="my-12 md:my-24 bg-black text-white rounded-xl shadow-lg p-8 md:p-12">
-            <h2 class="text-4xl font-black text-center mb-4 text-white">Flujo de Valor Sistemático: Detalle del Proceso</h2>
-            <p class="max-w-3xl mx-auto text-lg text-gray-400 mb-10 text-center">Cada etapa del proceso de Luky está diseñada para maximizar la eficiencia, la precisión y la experiencia del usuario, apalancada en la automatización.</p>
+        <section id="flujo-sistematico" class="my-12 md:my-24 bg-black text-white rounded-xl shadow-lg p-8 md:p-12 transition-colors duration-300">
+            <h2 class="text-4xl font-black text-center mb-4 text-primary-custom" data-key="systematicFlowTitle">Flujo de Valor Sistemático: Detalle del Proceso</h2>
+            <p class="max-w-3xl mx-auto text-lg text-secondary-custom mb-10 text-center" data-key="systematicFlowSubtitle">Cada etapa del proceso de Luky está diseñada para maximizar la eficiencia, la precisión y la experiencia del usuario, apalancada en la automatización.</p>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-card-bg rounded-xl shadow-md p-6 text-white">
-                    <h3 class="text-2xl font-bold mb-4 text-accent-yellow">1. Simulación y Pre-calificación</h3>
-                    <p class="text-gray-400 mb-2">El cliente ingresa datos básicos para una simulación de cuotas e intereses. El sistema realiza una pre-evaluación inicial basada en criterios mínimos, ofreciendo una estimación rápida.</p>
-                    <p class="text-gray-500 text-sm">**Tecnología:** Interfaz de usuario intuitiva, lógica de cálculo en tiempo real.</p>
+                <div class="bg-card-bg rounded-xl shadow-md p-6 text-primary-custom transition-colors duration-300">
+                    <h3 class="text-2xl font-bold mb-4 text-accent-color" data-key="sysFlow1Title">1. Simulación y Pre-calificación</h3>
+                    <p class="text-secondary-custom mb-2" data-key="sysFlow1Text">El cliente ingresa datos básicos para una simulación de cuotas e intereses. El sistema realiza una pre-evaluación inicial basada en criterios mínimos, ofreciendo una estimación rápida.</p>
+                    <p class="text-secondary-custom text-sm" data-key="sysFlow1Tech">Tecnología: Interfaz de usuario intuitiva, lógica de cálculo en tiempo real.</p>
                 </div>
-                <div class="bg-card-bg rounded-xl shadow-md p-6 text-white">
-                    <h3 class="text-2xl font-bold mb-4 text-accent-yellow">2. Recopilación de Datos y Documentos</h3>
-                    <p class="text-gray-400 mb-2">Formulario digital guiado para información personal, judicial y financiera. Se facilita la carga de documentos esenciales (ej. cédula, extractos bancarios) con validación de formato.</p>
-                    <p class="text-gray-500 text-sm">**Tecnología:** Formulario dinámico, carga de archivos segura, validación de datos.</p>
+                <div class="bg-card-bg rounded-xl shadow-md p-6 text-primary-custom transition-colors duration-300">
+                    <h3 class="text-2xl font-bold mb-4 text-accent-color" data-key="sysFlow2Title">2. Recopilación de Datos y Documentos</h3>
+                    <p class="text-secondary-custom mb-2" data-key="sysFlow2Text">Formulario digital guiado para información personal, judicial y financiera. Se facilita la carga de documentos esenciales (ej. cédula, extractos bancarios) con validación de formato.</p>
+                    <p class="text-secondary-custom text-sm" data-key="sysFlow2Tech">Tecnología: Formulario dinámico, carga de archivos segura, validación de datos.</p>
                 </div>
-                <div class="bg-card-bg rounded-xl shadow-md p-6 text-white">
-                    <h3 class="text-2xl font-bold mb-4 text-accent-yellow">3. Verificación de Identidad Profunda</h3>
-                    <p class="text-gray-400 mb-2">Integración con plataformas especializadas como Metamap para una verificación biométrica y documental robusta, garantizando la seguridad y previniendo el fraude.</p>
-                    <p class="text-gray-500 text-sm">**Tecnología:** Integración API con Metamap, algoritmos de reconocimiento facial y documental.</p>
+                <div class="bg-card-bg rounded-xl shadow-md p-6 text-primary-custom transition-colors duration-300">
+                    <h3 class="text-2xl font-bold mb-4 text-accent-color" data-key="sysFlow3Title">3. Verificación de Identidad Profunda</h3>
+                    <p class="text-secondary-custom mb-2" data-key="sysFlow3Text">Integración con plataformas especializadas como Metamap para una verificación biométrica y documental robusta, garantizando la seguridad y previniendo el fraude.</p>
+                    <p class="text-secondary-custom text-sm" data-key="sysFlow3Tech">Tecnología: Integración API con Metamap, algoritmos de reconocimiento facial y documental.</p>
                 </div>
-                <div class="bg-card-bg rounded-xl shadow-md p-6 text-white">
-                    <h3 class="text-2xl font-bold mb-4 text-accent-yellow">4. Evaluación Crediticia Automatizada</h3>
-                    <p class="text-gray-400 mb-2">Conexión directa vía web services con centrales de riesgo como Data Crédito (Colombia) para obtener el historial crediticio y score del solicitante. Modelos de IA evalúan el riesgo.</p>
-                    <p class="text-gray-500 text-sm">**Tecnología:** Integración API con Data Crédito, modelos de Machine Learning para scoring crediticio.</p>
+                <div class="bg-card-bg rounded-xl shadow-md p-6 text-primary-custom transition-colors duration-300">
+                    <h3 class="text-2xl font-bold mb-4 text-accent-color" data-key="sysFlow4Title">4. Evaluación Crediticia Automatizada</h3>
+                    <p class="text-secondary-custom mb-2" data-key="sysFlow4Text">Conexión directa vía web services con centrales de riesgo como Data Crédito (Colombia) para obtener el historial crediticio y score del solicitante. Modelos de IA evalúan el riesgo.</p>
+                    <p class="text-secondary-custom text-sm" data-key="sysFlow4Tech">Tecnología: Integración API con Data Crédito, modelos de Machine Learning para scoring crediticio.</p>
                 </div>
-                <div class="bg-card-bg rounded-xl shadow-md p-6 text-white">
-                    <h3 class="text-2xl font-bold mb-4 text-accent-yellow">5. Modelo Decisorio y Oferta Personalizada</h3>
-                    <p class="text-gray-400 mb-2">Basado en la evaluación crediticia, el sistema genera automáticamente un preaprobado a la medida. Si no califica, se activan los consejos financieros personalizados generados por IA.</p>
-                    <p class="text-gray-500 text-sm">**Tecnología:** Motor de reglas de negocio, algoritmos de optimización de oferta, LLM para consejos.</p>
+                <div class="bg-card-bg rounded-xl shadow-md p-6 text-primary-custom transition-colors duration-300">
+                    <h3 class="text-2xl font-bold mb-4 text-accent-color" data-key="sysFlow5Title">5. Modelo Decisorio y Oferta Personalizada</h3>
+                    <p class="text-secondary-custom mb-2" data-key="sysFlow5Text">Basado en la evaluación crediticia, el sistema genera automáticamente un preaprobado a la medida. Si no califica, se activan los consejos financieros personalizados generados por IA.</p>
+                    <p class="text-secondary-custom text-sm" data-key="sysFlow5Tech">Tecnología: Motor de reglas de negocio, algoritmos de optimización de oferta, LLM para consejos.</p>
                 </div>
-                <div class="bg-card-bg rounded-xl shadow-md p-6 text-white">
-                    <h3 class="text-2xl font-bold mb-4 text-accent-yellow">6. Gestión de Desembolso y Trazabilidad</h3>
-                    <p class="text-gray-400 mb-2">Automatización del papeleo y coordinación con aliados bancarios. El cliente accede a un portal donde visualiza cuotas, fechas, saldo pendiente y recibe soporte 24/7 vía chatbot.</p>
-                    <p class="text-gray-500 text-sm">**Tecnología:** Plataforma de gestión de clientes (CRM), integración con sistemas bancarios, chatbot con procesamiento de lenguaje natural.</p>
+                <div class="bg-card-bg rounded-xl shadow-md p-6 text-primary-custom transition-colors duration-300">
+                    <h3 class="text-2xl font-bold mb-4 text-accent-color" data-key="sysFlow6Title">6. Gestión de Desembolso y Trazabilidad</h3>
+                    <p class="text-secondary-custom mb-2" data-key="sysFlow6Text">Automatización del papeleo y coordinación con aliados bancarios. El cliente accede a un portal donde visualiza cuotas, fechas, saldo pendiente y recibe soporte 24/7 vía chatbot.</p>
+                    <p class="text-secondary-custom text-sm" data-key="sysFlow6Tech">Tecnología: Plataforma de gestión de clientes (CRM), integración con sistemas bancarios, chatbot con procesamiento de lenguaje natural.</p>
                 </div>
-                <div class="bg-card-bg rounded-xl shadow-md p-6 text-white md:col-span-2">
-                    <h3 class="text-2xl font-bold mb-4 text-accent-yellow">7. Sistema de Recaudos Inteligente</h3>
-                    <p class="text-gray-400 mb-2">Conexión con pasarelas de pago y sistemas bancarios para un recaudo automático y trazable de las cuotas. Notificaciones proactivas y recordatorios personalizables.</p>
-                    <p class="text-gray-500 text-sm">**Tecnología:** Integración con pasarelas de pago (ej. PSE, tarjetas), módulos de conciliación automática, sistema de notificaciones.</p>
+                <div class="bg-card-bg rounded-xl shadow-md p-6 text-primary-custom md:col-span-2 transition-colors duration-300">
+                    <h3 class="text-2xl font-bold mb-4 text-accent-color" data-key="sysFlow7Title">7. Sistema de Recaudos Inteligente</h3>
+                    <p class="text-secondary-custom mb-2" data-key="sysFlow7Text">Conexión con pasarelas de pago y sistemas bancarios para un recaudo automático y trazable de las cuotas. Notificaciones proactivas y recordatorios personalizables.</p>
+                    <p class="text-secondary-custom text-sm" data-key="sysFlow7Tech">Tecnología: Integración con pasarelas de pago (ej. PSE, tarjetas), módulos de conciliación automática, sistema de notificaciones.</p>
                 </div>
             </div>
         </section>
 
         <section id="impacto-financiero" class="my-12 md:my-24">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                 <div class="bg-card-bg rounded-xl shadow-lg p-8 text-white">
-                    <h3 class="text-2xl font-bold text-center mb-4">Optimización de Procesos: Antes vs. Luky</h3>
+                 <div class="bg-card-bg rounded-xl shadow-lg p-8 text-primary-custom transition-colors duration-300">
+                    <h3 class="text-2xl font-bold text-center mb-4" data-key="processOptimizationTitle">Optimización de Procesos: Antes vs. Luky</h3>
                     <div class="chart-container">
                         <canvas id="impactChart"></canvas>
                     </div>
-                    <p class="text-center text-gray-400 mt-4">Reducción drástica en tiempos de aprobación y dependencia manual, liberando recursos y acelerando ventas.</p>
+                    <p class="text-center text-secondary-custom mt-4" data-key="processOptimizationText">Reducción drástica en tiempos de aprobación y dependencia manual, liberando recursos y acelerando ventas.</p>
                 </div>
-                <div class="bg-card-bg rounded-xl shadow-lg p-8 text-white">
-                    <h3 class="text-3xl font-bold mb-4">Retorno de Inversión para Partners</h3>
-                    <p class="text-gray-400 mb-6">Luky no solo facilita créditos, sino que impulsa el volumen de negocio y la eficiencia operativa para nuestros aliados.</p>
-                    <ul class="space-y-4">
-                        <li class="flex items-start"><span class="text-accent-yellow font-bold text-2xl mr-3">✓</span><div><strong class="block">Aumento de Ventas en Concesionarios:</strong> Mayor conversión de clientes potenciales.</div></li>
-                        <li class="flex items-start"><span class="text-accent-yellow font-bold text-2xl mr-3">✓</span><div><strong class="block">Eficiencia Operativa para Asesores:</strong> Enfoque en el cierre, no en el papeleo.</div></li>
-                        <li class="flex items-start"><span class="text-accent-yellow font-bold text-2xl mr-3">✓</span><div><strong class="block">Fidelización de Clientes:</strong> Experiencia superior que genera lealtad y recurrencia.</div></li>
+                <div class="bg-card-bg rounded-xl shadow-lg p-8 text-primary-custom transition-colors duration-300">
+                    <h3 class="text-3xl font-bold mb-4" data-key="roiPartnersTitle">Retorno de Inversión para Partners</h3>
+                    <p class="text-secondary-custom mb-6" data-key="roiPartnersText">Luky no solo facilita créditos, sino que impulsa el volumen de negocio y la eficiencia operativa para nuestros aliados.</p>
+                    <ul class="space-y-4 text-left">
+                        <li class="flex items-start"><span class="text-accent-color font-bold text-2xl mr-3">✓</span><div><strong class="block" data-key="roiPoint1Title">Aumento de Ventas en Concesionarios:</strong> <span class="text-secondary-custom" data-key="roiPoint1Text">Mayor conversión de clientes potenciales.</span></div></li>
+                        <li class="flex items-start"><span class="text-accent-color font-bold text-2xl mr-3">✓</span><div><strong class="block" data-key="roiPoint2Title">Eficiencia Operativa para Asesores:</strong> <span class="text-secondary-custom" data-key="roiPoint2Text">Enfoque en el cierre, no en el papeleo.</span></div></li>
+                        <li class="flex items-start"><span class="text-accent-color font-bold text-2xl mr-3">✓</span><div><strong class="block" data-key="roiPoint3Title">Fidelización de Clientes:</strong> <span class="text-secondary-custom" data-key="roiPoint3Text">Experiencia superior que genera lealtad y recurrencia.</span></div></li>
                     </ul>
                 </div>
             </div>
         </section>
 
-        <section id="ia-ventaja" class="my-12 md:my-24 bg-black text-white rounded-xl shadow-lg p-8 md:p-12">
-            <h2 class="text-4xl font-black text-center mb-4 text-white">Ventaja Competitiva Impulsada por IA ✨</h2>
-            <p class="max-w-3xl mx-auto text-lg text-gray-400 mb-10 text-center">Nuestra integración de IA no es un extra, es el núcleo de nuestra diferenciación y escalabilidad.</p>
+        <section id="ia-ventaja" class="my-12 md:my-24 bg-black text-white rounded-xl shadow-lg p-8 md:p-12 transition-colors duration-300">
+            <h2 class="text-4xl font-black text-center mb-4 text-primary-custom" data-key="aiAdvantageTitle">Ventaja Competitiva Impulsada por IA ✨</h2>
+            <p class="max-w-3xl mx-auto text-lg text-secondary-custom mb-10 text-center" data-key="aiAdvantageSubtitle">Nuestra integración de IA no es un extra, es el núcleo de nuestra diferenciación y escalabilidad.</p>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-card-bg rounded-xl shadow-md p-6 text-white">
-                    <h3 class="text-2xl font-bold mb-4 text-center text-accent-yellow">Consejos Financieros Personalizados</h3>
-                    <p class="text-gray-400 mb-4 text-center">Reducimos la tasa de rechazo a largo plazo educando a los usuarios, convirtiendo "no" en "pronto".</p>
-                    <button id="getFinancialAdviceBtn" class="w-full bg-accent-yellow text-black font-bold py-3 px-6 rounded-lg hover:bg-yellow-500 transition-colors text-lg flex items-center justify-center">
-                        <span id="adviceButtonText">Generar Consejos</span>
+                <div class="bg-card-bg rounded-xl shadow-md p-6 text-primary-custom transition-colors duration-300">
+                    <h3 class="text-2xl font-bold mb-4 text-center text-accent-color" data-key="aiFeature1Title">Consejos Financieros Personalizados</h3>
+                    <p class="text-secondary-custom mb-4 text-center" data-key="aiFeature1Text">Reducimos la tasa de rechazo a largo plazo educando a los usuarios, convirtiendo "no" en "pronto".</p>
+                    <button id="getFinancialAdviceBtn" class="w-full bg-accent-color text-black font-bold py-3 px-6 rounded-lg hover:bg-yellow-500 transition-colors text-lg flex items-center justify-center">
+                        <span id="adviceButtonText" data-key="generateAdviceBtn">Generar Consejos</span>
                         <span id="adviceSpinner" class="spinner hidden"></span>
                     </button>
-                    <div id="financialAdviceOutput" class="mt-6 p-4 bg-gray-700 rounded-lg text-gray-300 hidden">
-                        <p class="font-bold mb-2">Aquí tienes algunos consejos:</p>
+                    <div id="financialAdviceOutput" class="mt-6 p-4 bg-gray-700 rounded-lg text-secondary-custom hidden transition-colors duration-300">
+                        <p class="font-bold mb-2" data-key="adviceOutputHeader">Aquí tienes algunos consejos:</p>
                         <div id="adviceContent"></div>
                     </div>
                 </div>
 
-                <div class="bg-card-bg rounded-xl shadow-md p-6 text-white">
-                    <h3 class="text-2xl font-bold mb-4 text-center text-accent-yellow">Explicación de Términos Simplificada</h3>
-                    <p class="text-gray-400 mb-4 text-center">Aumentamos la transparencia y la confianza del cliente, reduciendo la fricción en el proceso de decisión.</p>
-                    <button id="explainTermsBtn" class="w-full bg-accent-yellow text-black font-bold py-3 px-6 rounded-lg hover:bg-yellow-500 transition-colors text-lg flex items-center justify-center">
-                        <span id="termsButtonText">Explicar Términos</span>
+                <div class="bg-card-bg rounded-xl shadow-md p-6 text-primary-custom transition-colors duration-300">
+                    <h3 class="text-2xl font-bold mb-4 text-center text-accent-color" data-key="aiFeature2Title">Explicación de Términos Simplificada</h3>
+                    <p class="text-secondary-custom mb-4 text-center" data-key="aiFeature2Text">Aumentamos la transparencia y la confianza del cliente, reduciendo la fricción en el proceso de decisión.</p>
+                    <button id="explainTermsBtn" class="w-full bg-accent-color text-black font-bold py-3 px-6 rounded-lg hover:bg-yellow-500 transition-colors text-lg flex items-center justify-center">
+                        <span id="termsButtonText" data-key="explainTermsBtn">Explicar Términos</span>
                         <span id="termsSpinner" class="spinner hidden"></span>
                     </button>
-                    <div id="termsExplanationOutput" class="mt-6 p-4 bg-gray-700 rounded-lg text-gray-300 hidden">
-                        <p class="font-bold mb-2">Explicación de Términos:</p>
+                    <div id="termsExplanationOutput" class="mt-6 p-4 bg-gray-700 rounded-lg text-secondary-custom hidden transition-colors duration-300">
+                        <p class="font-bold mb-2" data-key="termsOutputHeader">Explicación de Términos:</p>
                         <div id="termsContent"></div>
+                    </div>
+                </div>
+
+                <!-- Nueva Característica 1: Análisis de Oportunidades de Mercado -->
+                <div class="bg-card-bg rounded-xl shadow-md p-6 text-primary-custom transition-colors duration-300">
+                    <h3 class="text-2xl font-bold mb-4 text-center text-accent-color" data-key="aiFeature3Title">Análisis de Oportunidades de Mercado ✨</h3>
+                    <p class="text-secondary-custom mb-4 text-center" data-key="aiFeature3Text">Identificamos y analizamos segmentos de mercado emergentes para expandir nuestra base de clientes.</p>
+                    <button id="getMarketAnalysisBtn" class="w-full bg-accent-color text-black font-bold py-3 px-6 rounded-lg hover:bg-yellow-500 transition-colors text-lg flex items-center justify-center">
+                        <span id="marketAnalysisButtonText" data-key="analyzeMarketBtn">Analizar Mercado</span>
+                        <span id="marketAnalysisSpinner" class="spinner hidden"></span>
+                    </button>
+                    <div id="marketAnalysisOutput" class="mt-6 p-4 bg-gray-700 rounded-lg text-secondary-custom hidden transition-colors duration-300">
+                        <p class="font-bold mb-2" data-key="marketAnalysisOutputHeader">Análisis de Oportunidad:</p>
+                        <div id="marketAnalysisContent"></div>
+                    </div>
+                </div>
+
+                <!-- Nueva Característica 2: Resumen del Panorama Competitivo -->
+                <div class="bg-card-bg rounded-xl shadow-md p-6 text-primary-custom transition-colors duration-300">
+                    <h3 class="text-2xl font-bold mb-4 text-center text-accent-color" data-key="aiFeature4Title">Resumen del Panorama Competitivo ✨</h3>
+                    <p class="text-secondary-custom mb-4 text-center" data-key="aiFeature4Text">Comprendemos nuestro entorno competitivo y destacamos nuestras ventajas únicas.</p>
+                    <button id="getCompetitiveSummaryBtn" class="w-full bg-accent-color text-black font-bold py-3 px-6 rounded-lg hover:bg-yellow-500 transition-colors text-lg flex items-center justify-center">
+                        <span id="competitiveSummaryButtonText" data-key="summarizeCompetitorsBtn">Resumir Competencia</span>
+                        <span id="competitiveSummarySpinner" class="spinner hidden"></span>
+                    </button>
+                    <div id="competitiveSummaryOutput" class="mt-6 p-4 bg-gray-700 rounded-lg text-secondary-custom hidden transition-colors duration-300">
+                        <p class="font-bold mb-2" data-key="competitiveSummaryOutputHeader">Resumen Competitivo:</p>
+                        <div id="competitiveSummaryContent"></div>
                     </div>
                 </div>
             </div>
         </section>
 
         <section id="modelo-proyecciones" class="my-12 md:my-24 text-center">
-            <h2 class="text-4xl font-black mb-4 text-white">Modelo de Negocio y Proyecciones de Crecimiento</h2>
-            <p class="max-w-3xl mx-auto text-lg text-gray-400 mb-8">Nuestro modelo de negocio es escalable y rentable, con proyecciones de crecimiento agresivas basadas en la penetración del mercado y la eficiencia operativa.</p>
+            <h2 class="text-4xl font-black mb-4 text-primary-custom" data-key="modelProjectionsTitle">Modelo de Negocio y Proyecciones de Crecimiento</h2>
+            <p class="max-w-3xl mx-auto text-lg text-secondary-custom mb-8" data-key="modelProjectionsSubtitle">Nuestro modelo de negocio es escalable y rentable, con proyecciones de crecimiento agresivas basadas en la penetración del mercado y la eficiencia operativa.</p>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-card-bg rounded-xl shadow-lg p-8 text-white">
-                    <h3 class="text-2xl font-bold mb-4">Fuentes de Ingreso</h3>
-                    <ul class="list-disc list-inside text-left text-gray-400 space-y-2">
-                        <li>**Comisión por Desembolso de Crédito:** % sobre el valor del préstamo.</li>
-                        <li>**Fee por Gestión de Cliente:** Cargo por el servicio y la plataforma.</li>
-                        <li>**Servicios de Valor Agregado:** Futuras ofertas como seguros o productos financieros complementarios.</li>
+                <div class="bg-card-bg rounded-xl shadow-lg p-8 text-primary-custom transition-colors duration-300">
+                    <h3 class="text-2xl font-bold mb-4" data-key="revenueSourcesTitle">Fuentes de Ingreso</h3>
+                    <ul class="list-disc list-inside text-left text-secondary-custom space-y-2">
+                        <li data-key="revenueSource1">**Comisión por Desembolso de Crédito:** % sobre el valor del préstamo.</li>
+                        <li data-key="revenueSource2">**Fee por Gestión de Cliente:** Cargo por el servicio y la plataforma.</li>
+                        <li data-key="revenueSource3">**Servicios de Valor Agregado:** Futuras ofertas como seguros o productos financieros complementarios.</li>
                     </ul>
                 </div>
-                <div class="bg-card-bg rounded-xl shadow-lg p-8 text-white">
-                    <h3 class="text-2xl font-bold text-center mb-4">Proyección de Crecimiento de Usuarios (Hipotético)</h3>
+                <div class="bg-card-bg rounded-xl shadow-lg p-8 text-primary-custom transition-colors duration-300">
+                    <h3 class="text-2xl font-bold text-center mb-4" data-key="growthProjectionTitle">Proyección de Crecimiento de Usuarios (Hipotético)</h3>
                     <div class="chart-container">
                         <canvas id="growthProjectionChart"></canvas>
                     </div>
-                    <p class="text-center text-gray-400 mt-4">Estimamos un crecimiento acelerado de usuarios activos gracias a nuestra propuesta de valor y estrategia de marketing.</p>
+                    <p class="text-center text-secondary-custom mt-4" data-key="growthProjectionText">Estimamos un crecimiento acelerado de usuarios activos gracias a nuestra propuesta de valor y estrategia de marketing.</p>
                 </div>
             </div>
         </section>
 
         <section id="equipo" class="my-12 md:my-24 text-center">
-            <h2 class="text-4xl font-black mb-4 text-white">El Equipo Detrás de Luky</h2>
-            <p class="max-w-3xl mx-auto text-lg text-gray-400 mb-8">Un equipo multidisciplinario con experiencia probada en tecnología, finanzas y el sector automotriz, listo para ejecutar nuestra visión.</p>
+            <h2 class="text-4xl font-black mb-4 text-primary-custom" data-key="teamTitle">El Equipo Detrás de Luky</h2>
+            <p class="max-w-3xl mx-auto text-lg text-secondary-custom mb-8" data-key="teamSubtitle">Un equipo multidisciplinario con experiencia probada en tecnología, finanzas y el sector automotriz, listo para ejecutar nuestra visión.</p>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="bg-card-bg rounded-xl shadow-lg p-6 text-white">
+                <div class="bg-card-bg rounded-xl shadow-lg p-6 text-primary-custom transition-colors duration-300">
                     <p class="text-5xl mb-3">👨‍💼</p>
-                    <h4 class="text-xl font-bold mb-2">CEO & Estrategia</h4>
-                    <p class="text-gray-400">Visión de negocio y liderazgo.</p>
+                    <h4 class="text-xl font-bold mb-2" data-key="ceoTitle">CEO & Estrategia</h4>
+                    <p class="text-secondary-custom" data-key="ceoText">Visión de negocio y liderazgo.</p>
                 </div>
-                <div class="bg-card-bg rounded-xl shadow-lg p-6 text-white">
+                <div class="bg-card-bg rounded-xl shadow-lg p-6 text-primary-custom transition-colors duration-300">
                     <p class="text-5xl mb-3">👩‍💻</p>
-                    <h4 class="text-xl font-bold mb-2">CTO & Tecnología</h4>
-                    <p class="text-gray-400">Arquitectura y desarrollo de la plataforma.</p>
+                    <h4 class="text-xl font-bold mb-2" data-key="ctoTitle">CTO & Tecnología</h4>
+                    <p class="text-secondary-custom" data-key="ctoText">Arquitectura y desarrollo de la plataforma.</p>
                 </div>
-                <div class="bg-card-bg rounded-xl shadow-lg p-6 text-white">
+                <div class="bg-card-bg rounded-xl shadow-lg p-6 text-primary-custom transition-colors duration-300">
                     <p class="text-5xl mb-3">📊</p>
-                    <h4 class="text-xl font-bold mb-2">CFO & Finanzas</h4>
-                    <p class="text-gray-400">Gestión financiera y alianzas.</p>
+                    <h4 class="text-xl font-bold mb-2" data-key="cfoTitle">CFO & Finanzas</h4>
+                    <p class="text-secondary-custom" data-key="cfoText">Gestión financiera y alianzas.</p>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <footer id="contacto" class="bg-black text-white p-8">
+    <footer id="contacto" class="bg-footer-bg text-primary-custom p-8 transition-colors duration-300">
         <div class="container mx-auto text-center">
-            <h2 class="text-3xl font-bold mb-4 text-white">Invierta en el Futuro de la Movilidad</h2>
-            <p class="max-w-2xl mx-auto mb-6 text-gray-400">Luky está listo para escalar. Hablemos de cómo podemos crecer juntos.</p>
-            <a href="mailto:inversiones@luky.com" class="bg-yellow-400 text-black font-bold py-3 px-6 rounded-lg hover:bg-yellow-500 transition-colors text-lg">Contacto para Inversores</a>
-            <div class="mt-8 text-gray-500">
-                <p>&copy; 2025 Luky Fintech. Todos los derechos reservados.</p>
-                <p class="text-sm mt-2">Los datos estadísticos y proyecciones son hipotéticos y para fines ilustrativos.</p>
+            <h2 class="text-3xl font-bold mb-4 text-primary-custom" data-key="footerTitle">Invierta en el Futuro de la Movilidad</h2>
+            <p class="max-w-2xl mx-auto mb-6 text-secondary-custom" data-key="footerText">Luky está listo para escalar. Hablemos de cómo podemos crecer juntos.</p>
+            <a href="mailto:inversiones@luky.com" class="bg-accent-color text-primary-custom font-bold py-3 px-6 rounded-lg hover:bg-yellow-500 transition-colors duration-300" data-key="footerContactBtn">Contacto para Inversores</a>
+            <div class="mt-8 text-secondary-custom">
+                <p data-key="copyright">&copy; 2025 Luky Fintech. Todos los derechos reservados.</p>
+                <p class="text-sm mt-2" data-key="disclaimer">Los datos estadísticos y proyecciones son hipotéticos y para fines ilustrativos.</p>
             </div>
         </div>
     </footer>
 
     <script>
-        // Colores de la paleta seleccionada (Negro y Amarillo Vibrante)
-        const bgColorDark = getComputedStyle(document.documentElement).getPropertyValue('--bg-dark');
-        const accentYellow = getComputedStyle(document.documentElement).getPropertyValue('--accent-yellow');
-        const cardBg = getComputedStyle(document.documentElement).getPropertyValue('--card-bg');
-        const textLight = getComputedStyle(document.documentElement).getPropertyValue('--text-light');
-        const textDark = getComputedStyle(document.documentElement).getPropertyValue('--text-dark');
-        const chartColor1 = getComputedStyle(document.documentElement).getPropertyValue('--chart-color-1');
-        const chartColor2 = getComputedStyle(document.documentElement).getPropertyValue('--chart-color-2');
+        const translations = {
+            es: {
+                docTitle: 'Luky | Pitch de Inversión - La Fintech que Impulsa tu Moto',
+                lukyTitle: 'Luky',
+                contactButton: 'Conéctate con Nosotros',
+                langEsText: 'Español',
+                langEnText: 'English',
+                section1Title: 'Luky: Impulsando el Futuro de la Movilidad',
+                section1Subtitle: 'Estamos resolviendo una fricción masiva en el mercado de financiación de motocicletas, abriendo un segmento de alto crecimiento.',
+                marketPotentialValue: '+$1.5B',
+                marketPotentialText: 'Mercado Potencial Anual de Financiación de Motos en Colombia (Hipotético).',
+                deepProblemTitle: 'El Problema: Una Red de Ineficiencias',
+                deepProblemSubtitle: 'El acceso a la financiación de motocicletas es un nudo complejo de obstáculos para todos los actores del ecosistema.',
+                centralProblemNode: 'Acceso a Financiación de Motos',
+                clientFinalNode: 'Cliente Final',
+                clientPoint1: 'Demoras o Rechazos (70%)',
+                clientPoint2: 'Exclusión (45% no bancarizados/historial limitado)',
+                clientPoint3: 'Falta de Transparencia',
+                clientPoint4: 'Dependencia de Asesores',
+                clientSolution1: '➡️ **Luky:** Pre-aprobado instantáneo',
+                clientSolution2: '➡️ **Luky:** Evaluación inclusiva con IA',
+                clientSolution3: '➡️ **Luky:** Plataforma con trazabilidad',
+                dealersNode: 'Concesionarios',
+                dealerPoint1: 'Ventas Potenciales Perdidas (30%)',
+                dealerPoint2: 'Ineficiencias con Múltiples Financieras',
+                dealerPoint3: 'Falta de Contexto del Cliente',
+                dealerSolution1: '➡️ **Luky:** Agilidad en desembolsos',
+                dealerSolution2: '➡️ **Luky:** Plataforma unificada',
+                dealerSolution3: '➡️ **Luky:** Perfil crediticio detallado',
+                advisorsNode: 'Asesores Comerciales',
+                advisorPoint1: 'Procesos Manuales (25% Productividad)',
+                advisorPoint2: 'Incertidumbre en Aprobación',
+                advisorPoint3: 'Falta de Herramientas Digitales',
+                advisorSolution1: '➡️ **Luky:** Automatización total',
+                advisorSolution2: '➡️ **Luky:** Modelos decisorios AI',
+                advisorSolution3: '➡️ **Luky:** Plataforma integral',
+                marketGrowthTitle: 'Un Mercado en Expansión con Demanda Insatisfecha',
+                marketGrowthText: 'El crecimiento exponencial en la venta de motocicletas contrasta con la rigidez del sistema financiero tradicional, dejando una brecha significativa para la innovación.',
+                motorcycleSalesValue: '+600,000',
+                motorcycleSalesText: 'Motos nuevas matriculadas en 2023 🏍️',
+                unqualifiedMarketTitle: 'El 45% del Mercado Motero No Califica',
+                unqualifiedMarketText: 'Un segmento masivo de clientes potenciales con capacidad de pago, pero sin acceso a crédito tradicional.',
+                ineficienciasTitle: 'Ineficiencias Actuales: Costos y Oportunidades Perdidas',
+                ineficienciesSubtitle: 'Las fricciones en el proceso de crédito actual resultan en pérdidas cuantificables para concesionarios y asesores.',
+                impactBySectorTitle: 'Impacto Financiero Negativo por Sector',
+                valuePropTitle: 'Luky: Nuestra Propuesta de Valor Disruptiva',
+                valuePropSubtitle: 'Una plataforma fintech que automatiza, personaliza y acelera el acceso a crédito, generando valor para todo el ecosistema.',
+                vp1Title: 'Velocidad de Aprobación', vp1Text: 'Créditos pre-aprobados en minutos, no días.',
+                vp2Title: 'Personalización AI', vp2Text: 'Ofertas a la medida, maximizando la inclusión.',
+                vp3Title: 'Experiencia Superior', vp3Text: 'Acompañamiento y educación financiera.',
+                vp4Title: 'Escalabilidad Digital', vp4Text: 'Operaciones automatizadas, alto volumen.',
+                vp5Title: 'Soporte 24/7 con Chatbot', vp5Text: 'Asistencia constante para cualquier consulta o problema.',
+                vp6Title: 'Recaudos Inteligentes', vp6Text: 'Sistema automatizado y con trazabilidad para pagos.',
+                vp7Title: 'Conexiones Web Services', vp7Text: 'Automatización con Data Crédito Colombia y más.',
+                flowTitle: 'El Flujo de Valor de Luky: Eficiencia y Conversión',
+                flow1: 'Simulación Instantánea',
+                flow2: 'Captura de Datos Digital',
+                flow3: 'Verificación Rápida (Metamap)',
+                flow4: 'Evaluación Crediticia AI',
+                flow5: 'Decisión y Oferta Optimizada',
+                flow6: 'Desembolso y Gestión Post-Crédito',
+                systematicFlowTitle: 'Flujo de Valor Sistemático: Detalle del Proceso',
+                systematicFlowSubtitle: 'Cada etapa del proceso de Luky está diseñada para maximizar la eficiencia, la precisión y la experiencia del usuario, apalancada en la automatización.',
+                sysFlow1Title: '1. Simulación y Pre-calificación', sysFlow1Text: 'El cliente ingresa datos básicos para una simulación de cuotas e intereses. El sistema realiza una pre-evaluación inicial basada en criterios mínimos, ofreciendo una estimación rápida.', sysFlow1Tech: 'Tecnología: Interfaz de usuario intuitiva, lógica de cálculo en tiempo real.',
+                sysFlow2Title: '2. Recopilación de Datos y Documentos', sysFlow2Text: 'Formulario digital guiado para información personal, judicial y financiera. Se facilita la carga de documentos esenciales (ej. cédula, extractos bancarios) con validación de formato.', sysFlow2Tech: 'Tecnología: Formulario dinámico, carga de archivos segura, validación de datos.',
+                sysFlow3Title: '3. Verificación de Identidad Profunda', sysFlow3Text: 'Integración con plataformas especializadas como Metamap para una verificación biométrica y documental robusta, garantizando la seguridad y previniendo el fraude.', sysFlow3Tech: 'Tecnología: Integración API con Metamap, algoritmos de reconocimiento facial y documental.',
+                sysFlow4Title: '4. Evaluación Crediticia Automatizada', sysFlow4Text: 'Conexión directa vía web services con centrales de riesgo como Data Crédito (Colombia) para obtener el historial crediticio y score del solicitante. Modelos de IA evalúan el riesgo.', sysFlow4Tech: 'Tecnología: Integración API con Data Crédito, modelos de Machine Learning para scoring crediticio.',
+                sysFlow5Title: '5. Modelo Decisorio y Oferta Personalizada', sysFlow5Text: 'Basado en la evaluación crediticia, el sistema genera automáticamente un preaprobado a la medida. Si no califica, se activan los consejos financieros personalizados generados por IA.', sysFlow5Tech: 'Tecnología: Motor de reglas de negocio, algoritmos de optimización de oferta, LLM para consejos.',
+                sysFlow6Title: '6. Gestión de Desembolso y Trazabilidad', sysFlow6Text: 'Automatización del papeleo y coordinación con aliados bancarios. El cliente accede a un portal donde visualiza cuotas, fechas, saldo pendiente y recibe soporte 24/7 vía chatbot.', sysFlow6Tech: 'Tecnología: Plataforma de gestión de clientes (CRM), integración con sistemas bancarios, chatbot con procesamiento de lenguaje natural.',
+                sysFlow7Title: '7. Sistema de Recaudos Inteligente', sysFlow7Text: 'Conexión con pasarelas de pago y sistemas bancarios para un recaudo automático y trazable de las cuotas. Notificaciones proactivas y recordatorios personalizables.', sysFlow7Tech: 'Tecnología: Integración con pasarelas de pago (ej. PSE, tarjetas), módulos de conciliación automática, sistema de notificaciones.',
+                processOptimizationTitle: 'Optimización de Procesos: Antes vs. Luky',
+                processOptimizationText: 'Reducción drástica en tiempos de aprobación y dependencia manual, liberando recursos y acelerando ventas.',
+                roiPartnersTitle: 'Retorno de Inversión para Partners',
+                roiPartnersText: 'Luky no solo facilita créditos, sino que impulsa el volumen de negocio y la eficiencia operativa para nuestros aliados.',
+                roiPoint1Title: 'Aumento de Ventas en Concesionarios:', roiPoint1Text: 'Mayor conversión de clientes potenciales.',
+                roiPoint2Title: 'Eficiencia Operativa para Asesores:', roiPoint2Text: 'Enfoque en el cierre, no en el papeleo.',
+                roiPoint3Title: 'Fidelización de Clientes:', roiPoint3Text: 'Experiencia superior que genera lealtad y recurrencia.',
+                aiAdvantageTitle: 'Ventaja Competitiva Impulsada por IA ✨',
+                aiAdvantageSubtitle: 'Nuestra integración de IA no es un extra, es el núcleo de nuestra diferenciación y escalabilidad.',
+                aiFeature1Title: 'Consejos Financieros Personalizados', aiFeature1Text: 'Reducimos la tasa de rechazo a largo plazo educando a los usuarios, convirtiendo "no" en "pronto".',
+                generateAdviceBtn: 'Generar Consejos', adviceOutputHeader: 'Aquí tienes algunos consejos:',
+                aiFeature2Title: 'Explicación de Términos Simplificada', aiFeature2Text: 'Aumentamos la transparencia y la confianza del cliente, reduciendo la fricción en el proceso de decisión.',
+                explainTermsBtn: 'Explicar Términos', termsOutputHeader: 'Explicación de Términos:',
+                aiFeature3Title: 'Análisis de Oportunidades de Mercado ✨', aiFeature3Text: 'Identificamos y analizamos segmentos de mercado emergentes para expandir nuestra base de clientes.',
+                analyzeMarketBtn: 'Analizar Mercado', marketAnalysisOutputHeader: 'Análisis de Oportunidad:',
+                aiFeature4Title: 'Resumen del Panorama Competitivo ✨', aiFeature4Text: 'Comprendemos nuestro entorno competitivo y destacamos nuestras ventajas únicas.',
+                summarizeCompetitorsBtn: 'Resumir Competencia', competitiveSummaryOutputHeader: 'Resumen Competitivo:',
+                modelProyeccionesTitle: 'Modelo de Negocio y Proyecciones de Crecimiento',
+                modelProyeccionesSubtitle: 'Nuestro modelo de negocio es escalable y rentable, con proyecciones de crecimiento agresivas basadas en la penetración del mercado y la eficiencia operativa.',
+                revenueSourcesTitle: 'Fuentes de Ingreso',
+                revenueSource1: '**Comisión por Desembolso de Crédito:** % sobre el valor del préstamo.',
+                revenueSource2: '**Fee por Gestión de Cliente:** Cargo por el servicio y la plataforma.',
+                revenueSource3: '**Servicios de Valor Agregado:** Futuras ofertas como seguros o productos financieros complementarios.',
+                growthProjectionTitle: 'Proyección de Crecimiento de Usuarios (Hipotético)',
+                growthProjectionText: 'Estimamos un crecimiento acelerado de usuarios activos gracias a nuestra propuesta de valor y estrategia de marketing.',
+                teamTitle: 'El Equipo Detrás de Luky',
+                teamSubtitle: 'Un equipo multidisciplinario con experiencia probada en tecnología, finanzas y el sector automotriz, listo para ejecutar nuestra visión.',
+                ceoTitle: 'CEO & Estrategia', ceoText: 'Visión de negocio y liderazgo.',
+                ctoTitle: 'CTO & Tecnología', ctoText: 'Arquitectura y desarrollo de la plataforma.',
+                cfoTitle: 'CFO & Finanzas', cfoText: 'Gestión financiera y alianzas.',
+                footerTitle: 'Invierta en el Futuro de la Movilidad',
+                footerText: 'Luky está listo para escalar. Hablemos de cómo podemos crecer juntos.',
+                footerContactBtn: 'Contacto para Inversores',
+                copyright: '&copy; 2025 Luky Fintech. Todos los derechos reservados.',
+                disclaimer: 'Los datos estadísticos y proyecciones son hipotéticos y para fines ilustrativos.',
+                chartLabelUnbanked: 'Mercado No Atendido',
+                chartLabelAttended: 'Mercado Atendido',
+                chartLabelLostSales: 'Pérdida de Ventas (Concesionarios)',
+                chartLabelReducedProductivity: 'Reducción Productividad (Asesores)',
+                chartLabelApprovalTime: 'Tiempo de Aprobación (Días)',
+                chartLabelManualDependence: 'Dependencia Manual (%)',
+                chartLabelTraditionalSystem: 'Sistema Tradicional',
+                chartLabelLuky: 'Luky',
+                chartLabelActiveUsers: 'Usuarios Activos (Miles)',
+                chartLabelYear1: 'Año 1', chartLabelYear2: 'Año 2', chartLabelYear3: 'Año 3', chartLabelYear4: 'Año 4', chartLabelYear5: 'Año 5',
+                generatingText: 'Generando...',
+                explainingText: 'Explicando...',
+                analyzingText: 'Analizando...',
+                summarizingText: 'Resumiendo...',
+                errorMessage: 'Lo siento, no pude generar una respuesta. Por favor, inténtalo de nuevo.',
+                apiError: 'Hubo un error al conectar con el servicio. Por favor, inténtalo más tarde.'
+            },
+            en: {
+                docTitle: 'Luky | Investor Pitch - The Fintech Powering Your Ride',
+                lukyTitle: 'Luky',
+                contactButton: 'Connect With Us',
+                langEsText: 'Spanish',
+                langEnText: 'English',
+                section1Title: 'Luky: Powering the Future of Mobility',
+                section1Subtitle: 'We are solving a massive friction in the motorcycle financing market, opening up a high-growth segment.',
+                marketPotentialValue: '+$1.5B',
+                marketPotentialText: 'Annual Potential Motorcycle Financing Market in Colombia (Hypothetical).',
+                deepProblemTitle: 'The Problem: A Web of Inefficiencies',
+                deepProblemSubtitle: 'Access to motorcycle financing is a complex knot of obstacles for all ecosystem players.',
+                centralProblemNode: 'Motorcycle Financing Access',
+                clientFinalNode: 'End Customer',
+                clientPoint1: 'Delays or Rejections (70%)',
+                clientPoint2: 'Exclusion (45% unbanked/limited history)',
+                clientPoint3: 'Lack of Transparency',
+                clientPoint4: 'Reliance on Advisors',
+                clientSolution1: '➡️ **Luky:** Instant Pre-approval',
+                clientSolution2: '➡️ **Luky:** Inclusive AI Evaluation',
+                clientSolution3: '➡️ **Luky:** Traceable Platform',
+                dealersNode: 'Dealerships',
+                dealerPoint1: 'Lost Potential Sales (30%)',
+                dealerPoint2: 'Inefficiencies with Multiple Financial Entities',
+                dealerPoint3: 'Lack of Customer Context',
+                dealerSolution1: '➡️ **Luky:** Agile Disbursements',
+                dealerSolution2: '➡️ **Luky:** Unified Platform',
+                dealerSolution3: '➡️ **Luky:** Detailed Credit Profile',
+                advisorsNode: 'Sales Advisors',
+                advisorPoint1: 'Manual Processes (25% Productivity)',
+                advisorPoint2: 'Approval Uncertainty',
+                advisorPoint3: 'Lack of Digital Tools',
+                advisorSolution1: '➡️ **Luky:** Full Automation',
+                advisorSolution2: '➡️ **Luky:** AI Decision Models',
+                advisorSolution3: '➡️ **Luky:** Integrated Platform',
+                marketGrowthTitle: 'An Expanding Market with Unsatisfied Demand',
+                marketGrowthText: 'The exponential growth in motorcycle sales contrasts with the rigidity of the traditional financial system, leaving a significant gap for innovation.',
+                motorcycleSalesValue: '+600,000',
+                motorcycleSalesText: 'New motorcycles registered in 2023 🏍️',
+                unqualifiedMarketTitle: '45% of the Motorcycle Market Does Not Qualify',
+                unqualifiedMarketText: 'A massive segment of potential customers with payment capacity, but without access to traditional credit.',
+                ineficienciesTitle: 'Current Inefficiencies: Costs and and Lost Opportunities',
+                ineficienciesSubtitle: 'Frictions in the current credit process result in quantifiable losses for dealerships and advisors.',
+                impactBySectorTitle: 'Negative Financial Impact by Sector',
+                valuePropTitle: 'Luky: Our Disruptive Value Proposition',
+                valuePropSubtitle: 'A fintech platform that automates, personalizes, and accelerates credit access, generating value for the entire ecosystem.',
+                vp1Title: 'Approval Speed', vp1Text: 'Pre-approved credits in minutes, not days.',
+                vp2Title: 'AI Personalization', vp2Text: 'Tailored offers, maximizing inclusion.',
+                vp3Title: 'Superior Experience', vp3Text: 'Support and financial education.',
+                vp4Title: 'Digital Scalability', vp4Text: 'Automated operations, high volume.',
+                vp5Title: '24/7 Chatbot Support', vp5Text: 'Constant assistance for any query or problem.',
+                vp6Title: 'Smart Collections', vp6Text: 'Automated and traceable system for payments.',
+                vp7Title: 'Web Services Connections', vp7Text: 'Automation with Data Crédito Colombia and more.',
+                flowTitle: 'Luky\'s Value Flow: Efficiency and Conversion',
+                flow1: 'Instant Simulation',
+                flow2: 'Digital Data Capture',
+                flow3: 'Quick Verification (Metamap)',
+                flow4: 'AI Credit Evaluation',
+                flow5: 'Optimized Decision and Offer',
+                flow6: 'Disbursement and Post-Credit Management',
+                systematicFlowTitle: 'Systematic Value Flow: Process Detail',
+                systematicFlowSubtitle: 'Each stage of Luky\'s process is designed to maximize efficiency, accuracy, and user experience, leveraged by automation.',
+                sysFlow1Title: '1. Simulation and Pre-qualification', sysFlow1Text: 'The client enters basic data for a quote and interest simulation. The system performs an initial pre-evaluation based on minimum criteria, offering a quick estimate.', sysFlow1Tech: 'Technology: Intuitive user interface, real-time calculation logic.',
+                sysFlow2Title: '2. Data and Document Collection', sysFlow2Text: 'Guided digital form for personal, legal, and financial information. Essential documents (e.g., ID, bank statements) are easily uploaded with format validation.', sysFlow2Tech: 'Technology: Dynamic form, secure file upload, data validation.',
+                sysFlow3Title: '3. Deep Identity Verification', sysFlow3Text: 'Integration with specialized platforms like Metamap for robust biometric and document verification, ensuring security and preventing fraud.', sysFlow3Tech: 'Technology: API integration with Metamap, facial and document recognition algorithms.',
+                sysFlow4Title: '4. Automated Credit Evaluation', sysFlow4Text: 'Direct connection via web services with credit bureaus like Data Crédito (Colombia) to obtain the applicant\'s credit history and score. AI models evaluate risk.', sysFlow4Tech: 'Technology: API integration with Data Crédito, Machine Learning models for credit scoring.',
+                sysFlow5Title: '5. Decision Model and Personalized Offer', sysFlow5Text: 'Based on the credit evaluation, the system automatically generates a tailored pre-approval. If not approved, personalized financial advice generated by AI is activated.', sysFlow5Tech: 'Technology: Business rule engine, offer optimization algorithms, LLM for advice.',
+                sysFlow6Title: '6. Disbursement and Traceability Management', sysFlow6Text: 'Automation of paperwork and coordination with banking partners. The client accesses a portal to view installments, dates, outstanding balance, and receives 24/7 support via chatbot.', sysFlow6Tech: 'Technology: Customer management platform (CRM), integration with banking systems, chatbot with natural language processing.',
+                sysFlow7Title: '7. Smart Collections System', sysFlow7Text: 'Connection with payment gateways and banking systems for automated and traceable collection of installments. Proactive notifications and customizable reminders.', sysFlow7Tech: 'Technology: Integration with payment gateways (e.g., PSE, cards), automatic reconciliation modules, notification system.',
+                processOptimizationTitle: 'Process Optimization: Before vs. Luky',
+                processOptimizationText: 'Drastic reduction in approval times and manual dependence, freeing up resources and accelerating sales.',
+                roiPartnersTitle: 'Return on Investment for Partners',
+                roiPartnersText: 'Luky not only facilitates credits but also boosts business volume and operational efficiency for our allies.',
+                roiPoint1Title: 'Increased Dealership Sales:', roiPoint1Text: 'Higher conversion of potential customers.',
+                roiPoint2Title: 'Operational Efficiency for Advisors:', roiPoint2Text: 'Focus on closing, not paperwork.',
+                roiPoint3Title: 'Customer Loyalty:', roiPoint3Text: 'Superior experience that generates loyalty and repeat business.',
+                aiAdvantageTitle: 'AI-Powered Competitive Advantage ✨',
+                aiAdvantageSubtitle: 'Our AI integration is not an add-on; it\'s the core of our differentiation and scalability.',
+                aiFeature1Title: 'Personalized Financial Advice', aiFeature1Text: 'We reduce the long-term rejection rate by educating users, turning "no" into "soon".',
+                generateAdviceBtn: 'Generate Advice', adviceOutputHeader: 'Here are some tips:',
+                aiFeature2Title: 'Simplified Term Explanation', aiFeature2Text: 'We increase customer transparency and trust, reducing friction in the decision-making process.',
+                explainTermsBtn: 'Explain Terms', termsOutputHeader: 'Explanation of Terms:',
+                aiFeature3Title: 'Market Opportunity Analysis ✨', aiFeature3Text: 'We identify and analyze emerging market segments to expand our customer base.',
+                analyzeMarketBtn: 'Analyze Market', marketAnalysisOutputHeader: 'Opportunity Analysis:',
+                aiFeature4Title: 'Competitive Landscape Summary ✨', aiFeature44Text: 'We understand our competitive environment and highlight our unique advantages.',
+                summarizeCompetitorsBtn: 'Summarize Competition', competitiveSummaryOutputHeader: 'Competitive Summary:',
+                modelProyeccionesTitle: 'Business Model and Growth Projections',
+                modelProyeccionesSubtitle: 'Our business model is scalable and profitable, with aggressive growth projections based on market penetration and operational efficiency.',
+                revenueSourcesTitle: 'Revenue Sources',
+                revenueSource1: '**Credit Disbursement Commission:** % on the loan value.',
+                revenueSource2: '**Client Management Fee:** Charge for the service and platform.',
+                revenueSource3: '**Value-Added Services:** Future offerings suchs as insurance or complementary financial products.',
+                growthProjectionTitle: 'User Growth Projection (Hypothetical)',
+                growthProjectionText: 'We estimate accelerated user growth thanks to our value proposition and marketing strategy.',
+                teamTitle: 'The Team Behind Luky',
+                teamSubtitle: 'A multidisciplinary team with proven experience in technology, finance, and the automotive sector, ready to execute our vision.',
+                ceoTitle: 'CEO & Strategy', ceoText: 'Business vision and leadership.',
+                ctoTitle: 'CTO & Technology', ctoText: 'Architecture and platform development.',
+                cfoTitle: 'CFO & Finanzas', cfoText: 'Financial management and partnerships.',
+                footerTitle: 'Invest in the Future of Mobility',
+                footerText: 'Luky is ready to scale. Let\'s talk about how we can grow together.',
+                footerContactBtn: 'Investor Contact',
+                copyright: '&copy; 2025 Luky Fintech. All rights reserved.',
+                disclaimer: 'Statistical data and projections are hypothetical and for illustrative purposes.',
+                chartLabelUnbanked: 'Unserved Market',
+                chartLabelAttended: 'Served Market',
+                chartLabelLostSales: 'Lost Sales (Dealerships)',
+                chartLabelReducedProductivity: 'Reduced Productivity (Advisors)',
+                chartLabelApprovalTime: 'Approval Time (Days)',
+                chartLabelManualDependence: 'Manual Dependence (%)',
+                chartLabelTraditionalSystem: 'Traditional System',
+                chartLabelLuky: 'Luky',
+                chartLabelActiveUsers: 'Users Active (Thousands)',
+                chartLabelYear1: 'Year 1', chartLabelYear2: 'Year 2', chartLabelYear3: 'Year 3', chartLabelYear4: 'Year 4', chartLabelYear5: 'Year 5',
+                generatingText: 'Generating...',
+                explainingText: 'Explaining...',
+                analyzingText: 'Analyzing...',
+                summarizingText: 'Summarizing...',
+                errorMessage: 'Sorry, I could not generate a response. Please try again.',
+                apiError: 'There was an error connecting to the service. Please try again later.'
+            }
+        };
 
-        // Función para envolver etiquetas largas en Chart.js
+        let currentLanguage = localStorage.getItem('lukyLang') || 'es';
+        let currentTheme = localStorage.getItem('lukyTheme') || 'dark';
+        let currentSlide = 0;
+        let problemSlides;
+        let carouselDots;
+
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            document.documentElement.lang = lang;
+            document.querySelectorAll('[data-key]').forEach(element => {
+                const key = element.getAttribute('data-key');
+                if (translations[lang][key]) {
+                    element.innerHTML = translations[lang][key];
+                }
+            });
+            document.getElementById('currentFlag').textContent = lang === 'es' ? '🇨🇴' : '🇺🇸';
+            document.getElementById('currentLangText').textContent = translations[lang][`lang${lang.charAt(0).toUpperCase() + lang.slice(1)}Text`]; // Update text next to flag
+            localStorage.setItem('lukyLang', lang);
+            updateChartLabels();
+        }
+
+        function toggleTheme() {
+            if (currentTheme === 'dark') {
+                document.body.classList.add('light-theme');
+                document.getElementById('themeIcon').textContent = '🌙';
+                currentTheme = 'light';
+            } else {
+                document.body.classList.remove('light-theme');
+                document.getElementById('themeIcon').textContent = '☀️';
+                currentTheme = 'dark';
+            }
+            localStorage.setItem('lukyTheme', currentTheme);
+            updateChartColors();
+        }
+
+        function updateChartColors() {
+            const chartColor1 = getComputedStyle(document.documentElement).getPropertyValue('--chart-color-1');
+            const chartColor2 = getComputedStyle(document.documentElement).getPropertyValue('--chart-color-2');
+            const bgColorMain = getComputedStyle(document.documentElement).getPropertyValue('--bg-main');
+            const cardBg = getComputedStyle(document.documentElement).getPropertyValue('--card-bg');
+            const textPrimary = getComputedStyle(document.documentElement).getPropertyValue('--text-primary');
+            const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
+            const borderColor = getComputedStyle(document.documentElement).getPropertyValue('--border-color');
+
+
+            // Update unbankedChart
+            if (window.unbankedChartInstance) {
+                window.unbankedChartInstance.data.datasets[0].backgroundColor = [chartColor1, chartColor2];
+                window.unbankedChartInstance.data.datasets[0].borderColor = bgColorMain;
+                window.unbankedChartInstance.options.plugins.legend.labels.color = textPrimary;
+                window.unbankedChartInstance.update();
+            }
+
+            // Update painPointsChart
+            if (window.painPointsChartInstance) {
+                window.painPointsChartInstance.data.datasets[0].backgroundColor = [chartColor1, chartColor2];
+                window.painPointsChartInstance.options.scales.y.ticks.color = textPrimary;
+                window.painPointsChartInstance.options.scales.x.grid.color = borderColor;
+                window.painPointsChartInstance.options.scales.x.ticks.color = textPrimary;
+                window.painPointsChartInstance.update();
+            }
+
+            // Update impactChart
+            if (window.impactChartInstance) {
+                window.impactChartInstance.data.datasets[0].backgroundColor = chartColor2;
+                window.impactChartInstance.data.datasets[1].backgroundColor = chartColor1;
+                window.impactChartInstance.options.plugins.legend.labels.color = textPrimary;
+                window.impactChartInstance.options.scales.y.grid.color = borderColor;
+                window.impactChartInstance.options.scales.y.ticks.color = textPrimary;
+                window.impactChartInstance.options.scales.x.ticks.color = textPrimary;
+                window.impactChartInstance.update();
+            }
+
+            // Update growthProjectionChart
+            if (window.growthProjectionChartInstance) {
+                window.growthProjectionChartInstance.data.datasets[0].borderColor = accentColor;
+                window.growthProjectionChartInstance.data.datasets[0].backgroundColor = accentColor.replace(')', ', 0.2)').replace('rgb(', 'rgba(');
+                window.growthProjectionChartInstance.data.datasets[0].pointBackgroundColor = accentColor;
+                window.growthProjectionChartInstance.data.datasets[0].pointBorderColor = accentColor;
+                window.growthProjectionChartInstance.options.scales.y.grid.color = borderColor;
+                window.growthProjectionChartInstance.options.scales.y.ticks.color = textPrimary;
+                window.growthProjectionChartInstance.options.scales.x.grid.color = borderColor;
+                window.growthProjectionChartInstance.options.scales.x.ticks.color = textPrimary;
+                window.growthProjectionChartInstance.options.plugins.legend.labels.color = textPrimary;
+                window.growthProjectionChartInstance.update();
+            }
+        }
+
+        function updateChartLabels() {
+            if (window.unbankedChartInstance) {
+                window.unbankedChartInstance.data.labels = [translations[currentLanguage].chartLabelUnbanked, translations[currentLanguage].chartLabelAttended];
+                window.unbankedChartInstance.update();
+            }
+            if (window.painPointsChartInstance) {
+                window.painPointsChartInstance.data.labels = [translations[currentLanguage].chartLabelLostSales, translations[currentLanguage].chartLabelReducedProductivity];
+                window.painPointsChartInstance.update();
+            }
+            if (window.impactChartInstance) {
+                const originalLabels = [translations[currentLanguage].chartLabelApprovalTime, translations[currentLanguage].chartLabelManualDependence];
+                const wrappedLabels = originalLabels.map(label => wrapLabels(label, 16));
+                window.impactChartInstance.data.labels = wrappedLabels;
+                window.impactChartInstance.data.datasets[0].label = translations[currentLanguage].chartLabelTraditionalSystem;
+                window.impactChartInstance.data.datasets[1].label = translations[currentLanguage].chartLabelLuky;
+                window.impactChartInstance.update();
+            }
+            if (window.growthProjectionChartInstance) {
+                window.growthProjectionChartInstance.data.labels = [translations[currentLanguage].chartLabelYear1, translations[currentLanguage].chartLabelYear2, translations[currentLanguage].chartLabelYear3, translations[currentLanguage].chartLabelYear4, translations[currentLanguage].chartLabelYear5];
+                window.growthProjectionChartInstance.data.datasets[0].label = translations[currentLanguage].chartLabelActiveUsers;
+                window.growthProjectionChartInstance.update();
+            }
+        }
+
         function wrapLabels(label, maxLength) {
             if (label.length <= maxLength) {
                 return label;
@@ -384,7 +988,6 @@
             return lines;
         }
 
-        // Callback para el título del tooltip de Chart.js
         const tooltipTitleCallback = (tooltipItems) => {
             const item = tooltipItems[0];
             let label = item.chart.data.labels[item.dataIndex];
@@ -393,15 +996,14 @@
             }
             return label;
         };
-
-        // Opciones comunes para los gráficos de Chart.js
+        
         const commonChartOptions = {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
                 legend: {
                     labels: {
-                        color: textLight,
+                        color: 'var(--text-primary)',
                         font: {
                             size: 14
                         }
@@ -417,10 +1019,10 @@
                 y: {
                     beginAtZero: true,
                     grid: {
-                        color: cardBg
+                        color: 'var(--border-color)'
                     },
                     ticks: {
-                        color: textLight
+                        color: 'var(--text-primary)'
                     }
                 },
                 x: {
@@ -428,23 +1030,21 @@
                         display: false
                     },
                     ticks: {
-                        color: textLight
+                        color: 'var(--text-primary)'
                     }
                 }
             }
         };
 
-        // Gráfico de Porcentaje de Moteros Desatendidos (Doughnut Chart)
-        const unbankedCtx = document.getElementById('unbankedChart').getContext('2d');
-        new Chart(unbankedCtx, {
+        window.unbankedChartInstance = new Chart(document.getElementById('unbankedChart').getContext('2d'), {
             type: 'doughnut',
             data: {
-                labels: ['Mercado No Atendido', 'Mercado Atendido'],
+                labels: [],
                 datasets: [{
                     label: 'Porcentaje del Mercado',
                     data: [45, 55],
-                    backgroundColor: [chartColor1, chartColor2],
-                    borderColor: bgColorDark,
+                    backgroundColor: ['var(--chart-color-1)', 'var(--chart-color-2)'],
+                    borderColor: 'var(--bg-main)',
                     borderWidth: 4
                 }]
             },
@@ -455,7 +1055,7 @@
                     legend: {
                         position: 'bottom',
                         labels: {
-                            color: textLight,
+                            color: 'var(--text-primary)',
                             font: { size: 14 }
                         }
                     },
@@ -468,16 +1068,14 @@
             }
         });
 
-        // Gráfico de Puntos de Dolor (Bar Chart)
-        const painPointsCtx = document.getElementById('painPointsChart').getContext('2d');
-        new Chart(painPointsCtx, {
+        window.painPointsChartInstance = new Chart(document.getElementById('painPointsChart').getContext('2d'), {
             type: 'bar',
             data: {
-                labels: ['Pérdida de Ventas (Concesionarios)', 'Reducción Productividad (Asesores)'],
+                labels: [],
                 datasets: [{
                     label: 'Impacto Financiero Negativo (%)',
                     data: [30, 25],
-                    backgroundColor: [chartColor1, chartColor2],
+                    backgroundColor: ['var(--chart-color-1)', 'var(--chart-color-2)'],
                     borderRadius: 4
                 }]
             },
@@ -487,11 +1085,11 @@
                 scales: {
                     y: {
                         grid: { display: false },
-                        ticks: { color: textLight, font: { size: 14 } }
+                        ticks: { color: 'var(--text-primary)', font: { size: 14 } }
                     },
                     x: {
-                        grid: { color: cardBg },
-                        ticks: { color: textLight }
+                        grid: { color: 'var(--border-color)' },
+                        ticks: { color: 'var(--text-primary)' }
                     }
                 },
                  plugins: {
@@ -505,25 +1103,21 @@
             }
         });
 
-        // Gráfico de Impacto de Luky (Stacked Bar Chart)
-        const impactCtx = document.getElementById('impactChart').getContext('2d');
-        const originalLabels = ['Tiempo de Aprobación (Días)', 'Dependencia Manual (%)'];
-        const wrappedLabels = originalLabels.map(label => wrapLabels(label, 16));
-        new Chart(impactCtx, {
+        window.impactChartInstance = new Chart(document.getElementById('impactChart').getContext('2d'), {
             type: 'bar',
             data: {
-                labels: wrappedLabels,
+                labels: [],
                 datasets: [
                     {
-                        label: 'Sistema Tradicional',
+                        label: '',
                         data: [5, 90],
-                        backgroundColor: chartColor2,
+                        backgroundColor: 'var(--chart-color-2)',
                         borderRadius: 4
                     },
                     {
-                        label: 'Luky',
+                        label: '',
                         data: [0.1, 5],
-                        backgroundColor: chartColor1,
+                        backgroundColor: 'var(--chart-color-1)',
                         borderRadius: 4
                     }
                 ]
@@ -533,7 +1127,7 @@
                 plugins: {
                     legend: {
                         position: 'bottom',
-                        labels: { color: textLight, font: { size: 14 } }
+                        labels: { color: 'var(--text-primary)', font: { size: 14 } }
                     },
                     tooltip: {
                         callbacks: {
@@ -544,21 +1138,19 @@
             }
         });
 
-        // Gráfico de Proyección de Crecimiento de Usuarios (Line Chart)
-        const growthProjectionCtx = document.getElementById('growthProjectionChart').getContext('2d');
-        new Chart(growthProjectionCtx, {
+        window.growthProjectionChartInstance = new Chart(document.getElementById('growthProjectionChart').getContext('2d'), {
             type: 'line',
             data: {
-                labels: ['Año 1', 'Año 2', 'Año 3', 'Año 4', 'Año 5'],
+                labels: [],
                 datasets: [{
-                    label: 'Usuarios Activos (Miles)',
-                    data: [50, 150, 400, 800, 1500], // Datos hipotéticos de crecimiento
-                    borderColor: accentYellow,
+                    label: '',
+                    data: [50, 150, 400, 800, 1500],
+                    borderColor: 'var(--accent-color)',
                     backgroundColor: 'rgba(255, 215, 0, 0.2)',
                     fill: true,
                     tension: 0.4,
-                    pointBackgroundColor: accentYellow,
-                    pointBorderColor: accentYellow
+                    pointBackgroundColor: 'var(--accent-color)',
+                    pointBorderColor: 'var(--accent-color)'
                 }]
             },
             options: {
@@ -567,62 +1159,71 @@
                     y: {
                         beginAtZero: true,
                         grid: {
-                            color: cardBg
+                            color: 'var(--border-color)'
                         },
                         ticks: {
-                            color: textLight
+                            color: 'var(--text-primary)'
                         }
                     },
                     x: {
                         grid: {
-                            color: cardBg
+                            display: false
                         },
                         ticks: {
-                            color: textLight
+                            color: 'var(--text-primary)'
                         }
                     }
                 },
                 plugins: {
                     legend: {
                         labels: {
-                            color: textLight,
+                            color: 'var(--text-primary)',
                             font: { size: 14 }
-                        }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            title: tooltipTitleCallback
                         }
                     }
                 }
             }
         });
 
-        // --- Funcionalidad LLM con Gemini API ---
-
-        // Elementos del DOM para Consejos Financieros
         const getFinancialAdviceBtn = document.getElementById('getFinancialAdviceBtn');
         const adviceButtonText = document.getElementById('adviceButtonText');
         const adviceSpinner = document.getElementById('adviceSpinner');
         const financialAdviceOutput = document.getElementById('financialAdviceOutput');
         const adviceContent = document.getElementById('adviceContent');
 
-        // Elementos del DOM para Explicación de Términos
         const explainTermsBtn = document.getElementById('explainTermsBtn');
         const termsButtonText = document.getElementById('termsButtonText');
         const termsSpinner = document.getElementById('termsSpinner');
         const termsExplanationOutput = document.getElementById('termsExplanationOutput');
         const termsContent = document.getElementById('termsContent');
 
-        // Función para llamar a la API de Gemini
-        async function callGeminiAPI(prompt) {
-            let chatHistory = [];
-            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-            const payload = { contents: chatHistory };
-            const apiKey = "";
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+        const getMarketAnalysisBtn = document.getElementById('getMarketAnalysisBtn');
+        const marketAnalysisButtonText = document.getElementById('marketAnalysisButtonText');
+        const marketAnalysisSpinner = document.getElementById('marketAnalysisSpinner');
+        const marketAnalysisOutput = document.getElementById('marketAnalysisOutput');
+        const marketAnalysisContent = document.getElementById('marketAnalysisContent');
+
+        const getCompetitiveSummaryBtn = document.getElementById('getCompetitiveSummaryBtn');
+        const competitiveSummaryButtonText = document.getElementById('competitiveSummaryButtonText');
+        const competitiveSummarySpinner = document.getElementById('competitiveSummarySpinner');
+        const competitiveSummaryOutput = document.getElementById('competitiveSummaryOutput');
+        const competitiveSummaryContent = document.getElementById('competitiveSummaryContent');
+
+
+        async function callGeminiAPI(prompt, spinnerElement, buttonElement, outputElement, contentElement, buttonTextElement, originalButtonTextKey) {
+            buttonTextElement.textContent = translations[currentLanguage]['generatingText'];
+            spinnerElement.classList.remove('hidden');
+            buttonElement.disabled = true;
+            outputElement.classList.add('hidden');
+            contentElement.innerHTML = '';
 
             try {
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
                 const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -633,53 +1234,119 @@
                 if (result.candidates && result.candidates.length > 0 &&
                     result.candidates[0].content && result.candidates[0].content.parts &&
                     result.candidates[0].content.parts.length > 0) {
-                    return result.candidates[0].content.parts[0].text;
+                    contentElement.innerHTML = result.candidates[0].content.parts[0].text.replace(/\n/g, '<br>');
                 } else {
                     console.error('Estructura de respuesta inesperada o contenido faltante:', result);
-                    return 'Lo siento, no pude generar una respuesta. Por favor, inténtalo de nuevo.';
+                    contentElement.innerHTML = translations[currentLanguage]['errorMessage'];
                 }
             } catch (error) {
                 console.error('Error al llamar a la API de Gemini:', error);
-                return 'Hubo un error al conectar con el servicio. Por favor, inténtalo más tarde.';
+                contentElement.innerHTML = translations[currentLanguage]['apiError'];
+            } finally {
+                outputElement.classList.remove('hidden');
+                buttonTextElement.textContent = translations[currentLanguage][originalButtonTextKey];
+                spinnerElement.classList.add('hidden');
+                buttonElement.disabled = false;
             }
         }
 
-        // Event Listener para Consejos Financieros
         getFinancialAdviceBtn.addEventListener('click', async () => {
-            adviceButtonText.textContent = 'Generando...';
-            adviceSpinner.classList.remove('hidden');
-            getFinancialAdviceBtn.disabled = true;
-            financialAdviceOutput.classList.add('hidden');
-            adviceContent.innerHTML = '';
-
-            const prompt = `Genera 4 consejos financieros prácticos y accionables para una persona que busca mejorar su historial crediticio y calificar para un préstamo de motocicleta en el futuro. Enfócate en ahorro, manejo de deudas, construcción de historial crediticio y presupuesto. Formatea la respuesta como una lista numerada.`;
-            const advice = await callGeminiAPI(prompt);
-
-            adviceContent.innerHTML = advice.replace(/\n/g, '<br>');
-            financialAdviceOutput.classList.remove('hidden');
-
-            adviceButtonText.textContent = 'Generar Consejos';
-            adviceSpinner.classList.add('hidden');
-            getFinancialAdviceBtn.disabled = false;
+            const prompt = translations[currentLanguage]['advicePrompt'];
+            await callGeminiAPI(prompt, adviceSpinner, getFinancialAdviceBtn, financialAdviceOutput, adviceContent, adviceButtonText, 'generateAdviceBtn');
         });
 
-        // Event Listener para Explicación de Términos
         explainTermsBtn.addEventListener('click', async () => {
-            termsButtonText.textContent = 'Explicando...';
-            termsSpinner.classList.remove('hidden');
-            explainTermsBtn.disabled = true;
-            termsExplanationOutput.classList.add('hidden');
-            termsContent.innerHTML = '';
+            const prompt = translations[currentLanguage]['termsPrompt'];
+            await callGeminiAPI(prompt, termsSpinner, explainTermsBtn, termsExplanationOutput, termsContent, termsButtonText, 'explainTermsBtn');
+        });
 
-            const prompt = `Explica de forma sencilla y clara los siguientes términos financieros relacionados con un crédito de motocicleta: 'Tasa de Interés Nominal', 'Tasa de Interés Efectiva Anual', 'Cuota Fija', 'Plazo del Crédito', 'Preaprobado'. Usa un lenguaje accesible para el público general. Formatea la respuesta como una lista de definiciones claras.`;
-            const explanation = await callGeminiAPI(prompt);
+        getMarketAnalysisBtn.addEventListener('click', async () => {
+            const prompt = translations[currentLanguage]['marketAnalysisPrompt'];
+            await callGeminiAPI(prompt, marketAnalysisSpinner, getMarketAnalysisBtn, marketAnalysisOutput, marketAnalysisContent, marketAnalysisButtonText, 'analyzeMarketBtn');
+        });
 
-            termsContent.innerHTML = explanation.replace(/\n/g, '<br>');
-            termsExplanationOutput.classList.remove('hidden');
+        getCompetitiveSummaryBtn.addEventListener('click', async () => {
+            const prompt = translations[currentLanguage]['competitiveSummaryPrompt'];
+            await callGeminiAPI(prompt, competitiveSummarySpinner, getCompetitiveSummaryBtn, competitiveSummaryOutput, competitiveSummaryContent, competitiveSummaryButtonText, 'summarizeCompetitorsBtn');
+        });
 
-            termsButtonText.textContent = 'Explicar Términos';
-            termsSpinner.classList.add('hidden');
-            explainTermsBtn.disabled = false;
+
+        document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+        
+        const languageDropdownBtn = document.getElementById('languageDropdownBtn');
+        const languageDropdownContent = document.getElementById('languageDropdownContent');
+        
+        languageDropdownBtn.addEventListener('click', (event) => {
+            languageDropdownContent.classList.toggle('show');
+            event.stopPropagation(); // Prevent document click from closing it immediately
+        });
+
+        languageDropdownContent.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', (event) => {
+                setLanguage(event.currentTarget.dataset.lang);
+                languageDropdownContent.classList.remove('show'); // Close dropdown after selection
+            });
+        });
+
+        // Close the dropdown if the user clicks outside of it
+        document.addEventListener('click', (event) => {
+            if (!languageDropdownBtn.contains(event.target) && !languageDropdownContent.contains(event.target)) {
+                languageDropdownContent.classList.remove('show');
+            }
+        });
+
+        // Carousel Logic
+        function showSlide(index) {
+            problemSlides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                carouselDots[i].classList.remove('active');
+            });
+            problemSlides[index].classList.add('active');
+            carouselDots[index].classList.add('active');
+            currentSlide = index;
+        }
+
+        function nextSlide() {
+            let newIndex = currentSlide + 1;
+            if (newIndex >= problemSlides.length) {
+                newIndex = 0; // Loop back to the first slide
+            }
+            showSlide(newIndex);
+        }
+
+        function prevSlide() {
+            let newIndex = currentSlide - 1;
+            if (newIndex < 0) {
+                newIndex = problemSlides.length - 1; // Loop to the last slide
+            }
+            showSlide(newIndex);
+        }
+
+        // Initial setup
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize currentLangText based on currentLanguage
+            currentLangText.textContent = translations[currentLanguage][`lang${currentLanguage.charAt(0).toUpperCase() + currentLanguage.slice(1)}Text`];
+
+            setLanguage(currentLanguage);
+            if (currentTheme === 'light') {
+                document.body.classList.add('light-theme');
+                document.getElementById('themeIcon').textContent = '🌙';
+            } else {
+                document.body.classList.remove('light-theme');
+                document.getElementById('themeIcon').textContent = '☀️';
+            }
+            updateChartColors();
+
+            problemSlides = document.querySelectorAll('.problem-slide');
+            carouselDots = document.querySelectorAll('.carousel-dots .dot');
+
+            document.getElementById('prevSlideBtn').addEventListener('click', prevSlide);
+            document.getElementById('nextSlideBtn').addEventListener('click', nextSlide);
+            carouselDots.forEach((dot, index) => {
+                dot.addEventListener('click', () => showSlide(index));
+            });
+
+            showSlide(currentSlide); // Initialize carousel to first slide
         });
     </script>
 </body>
